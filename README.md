@@ -54,21 +54,6 @@ dependencies: - `DBI`, `RSQLite` - Database interface - `dplyr`,
 `readr`, `purrr`, `stringr`, `tibble` - Data manipulation - `progress`
 (optional) - Progress bars for batch operations
 
-### Suggested Additional Packages
-
-For enhanced functionality, consider installing:
-
-``` r
-# For advanced text analysis
-install.packages(c("dbplyr", "quanteda", "tm"))
-
-# For visualisation
-install.packages(c("ggplot2", "plotly"))
-
-# For reporting
-install.packages(c("knitr", "rmarkdown"))
-```
-
 ## Quick Start
 
 ``` r
