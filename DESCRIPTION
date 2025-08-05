@@ -1,0 +1,33 @@
+Package: hansardR
+Type: Package
+Title: Process Australian Parliamentary Hansard Data from a gazillion csv files
+Version: 0.1.0
+Authors@R: c(
+    person("Kenneth", "Benoit", email = "kbenoit@smu.edu.sg", role = c("cre", "aut"), comment = c(ORCID = "0000-0002-0797-564X"))
+  )
+Description: A comprehensive toolkit for processing, validating, and analysing 
+    Australian Parliamentary Hansard CSV data. Provides functions for database 
+    creation, file validation, batch processing, and structured queries of 
+    parliamentary speeches, debates, and member information.
+License: GPL (>= 3)
+Encoding: UTF-8
+Depends:
+    R (>= 4.1.0)
+Imports: 
+    DBI,
+    RSQLite,
+    dplyr,
+    readr,
+    purrr,
+    stringr,
+    tibble
+Suggests: 
+    testthat (>= 3.0.0),
+    progress,
+    knitr,
+    rmarkdown,
+    dbplyr
+Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+VignetteBuilder: knitr

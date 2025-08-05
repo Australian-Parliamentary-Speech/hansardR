@@ -1,0 +1,483 @@
+---
+title: "Complete Hansard Data Processing Workflow"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Complete Hansard Data Processing Workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE  # Set to TRUE when you have actual data files
+)
+```
+
+# Processing Australian Parliamentary Hansard Data
+
+The `hansardR` package provides a comprehensive toolkit for processing, validating, and analysing Australian Parliamentary Hansard CSV data. This vignette demonstrates the complete workflow from raw CSV files to a structured database ready for computational social science research.
+
+## Overview
+
+The package handles parliamentary data with the following structure:
+- **Sessions**: Parliamentary sitting days
+- **Members**: MPs with party affiliations and electorates  
+- **Debates**: Major topics discussed in each session
+- **Speeches**: Individual contributions, questions, answers, and interjections
+
+## Setup
+
+```{r setup}
+library(hansardR)
+library(dplyr)
+library(DBI)
+
+# Set paths for your system - UPDATE THESE PATHS
+base_path <- "~/HouseCSV"  # Directory containing year subdirectories (1901/, 1902/, etc.)
+db_path <- "hansard_analysis.db"  # Where to create the database
+```
+
+## Step 1: Database Creation
+
+Create a new SQLite database with the standard Hansard schema:
+
+```{r database-creation}
+# Create database with standard schema
+con <- create_hansard_database(db_path, overwrite = TRUE)
+
+# Or connect to existing database
+# con <- connect_hansard_database(db_path)
+```
+
+The database includes optimised indexes for:
+- Temporal queries (by date, year)
+- Member-based analysis (by party, electorate)
+- Content analysis (full-text search ready)
+- Debate structure (hierarchical organisation)
+
+## Step 2: File Discovery and Validation
+
+Before processing, validate your CSV files to ensure data integrity:
+
+```{r file-discovery}
+# Find all CSV files in your directory structure
+year_dirs <- list.dirs(base_path, recursive = FALSE, full.names = TRUE)
+year_dirs <- year_dirs[grepl("^\\d{4}$", basename(year_dirs))]  # Only 4-digit year directories
+
+# Get sample of files for validation
+sample_files <- c()
+for (year_dir in year_dirs[1:3]) {  # Check first 3 years
+  files <- list.files(year_dir, pattern = "*_edit_step7.csv", full.names = TRUE)
+  sample_files <- c(sample_files, files[1:min(5, length(files))])  # First 5 files per year
+}
+
+cat("Found", length(sample_files), "sample files for validation\n")
+```
+
+### File Structure Validation
+
+```{r validation}
+# Validate file structures
+validation_results <- validate_csv_batch(sample_files)
+
+# View validation summary
+print(validation_results)
+
+# Check for issues
+problems <- validation_results[!validation_results$valid, ]
+if (nrow(problems) > 0) {
+  cat("Files with issues:\n")
+  print(problems[c("filename", "issues", "error")])
+}
+
+# Files ready for import
+valid_files <- validation_results$file_path[validation_results$valid]
+cat("\nValid files ready for import:", length(valid_files), "\n")
+```
+
+## Step 3: Single File Import
+
+Start by importing a single file to test the workflow:
+
+```{r single-import}
+# Import one file for testing
+if (length(valid_files) > 0) {
+  test_file <- valid_files[1]
+  cat("Testing import with:", basename(test_file), "\n")
+  
+  success <- import_hansard_file(test_file, con, validate = TRUE)
+  
+  if (success) {
+    cat("✓ Test import successful!\n")
+    
+    # Check what was imported
+    stats <- get_database_stats(con)
+    cat("Database now contains:\n")
+    cat("  Sessions:", stats$sessions, "\n")
+    cat("  Members:", stats$members, "\n")
+    cat("  Speeches:", stats$speeches, "\n")
+  }
+}
+```
+
+## Step 4: Batch Processing
+
+### Process a Single Year
+
+```{r year-import}
+# Process all files from one year
+year_to_process <- "2025"  # Adjust as needed
+year_path <- file.path(base_path, year_to_process)
+
+if (dir.exists(year_path)) {
+  cat("Processing year", year_to_process, "\n")
+  
+  year_results <- import_hansard_year(
+    year_path, 
+    con, 
+    pattern = "*_edit_step7.csv",
+    validate = TRUE,
+    progress = TRUE
+  )
+  
+  # View results
+  print(year_results)
+}
+```
+
+### Process Multiple Years
+
+```{r multi-year-import}
+# Process several years (adjust range as needed)
+years_to_process <- c("2023", "2024", "2025")
+
+all_results <- list()
+
+for (year in years_to_process) {
+  year_path <- file.path(base_path, year)
+  
+  if (dir.exists(year_path)) {
+    cat("\n=== Processing", year, "===\n")
+    
+    year_results <- import_hansard_year(
+      year_path, 
+      con,
+      validate = TRUE,
+      force_reimport = FALSE,  # Skip existing sessions
+      progress = TRUE
+    )
+    
+    all_results[[year]] <- year_results
+  } else {
+    cat("Directory not found:", year_path, "\n")
+  }
+}
+
+# Combine results
+combined_results <- do.call(rbind, all_results)
+print(combined_results)
+```
+
+## Step 5: Data Exploration
+
+### Database Statistics
+
+```{r stats}
+# Get comprehensive database statistics
+stats <- get_database_stats(con)
+
+cat("=== Database Statistics ===\n")
+cat("Sessions:", stats$sessions, "\n")
+cat("Members:", stats$members, "\n")
+cat("Debates:", stats$debates, "\n")
+cat("Speeches:", stats$speeches, "\n")
+cat("Date range:", as.character(stats$date_range[1]), "to", as.character(stats$date_range[2]), "\n")
+cat("Average speech length:", round(stats$avg_length, 1), "characters\n")
+
+cat("\nSpeech types:\n")
+cat("  Questions:", stats$questions, "\n")
+cat("  Answers:", stats$answers, "\n")
+cat("  Speeches:", stats$speeches, "\n")
+cat("  Interjections:", stats$interjections, "\n")
+```
+
+### Top Speakers Analysis
+
+```{r top-speakers}
+# Get most active speakers
+top_speakers <- get_top_speakers(con, limit = 15)
+print(top_speakers)
+
+# Party breakdown
+party_activity <- top_speakers |>
+  group_by(party) |>
+  summarise(
+    members = n(),
+    total_speeches = sum(total_speeches),
+    avg_speeches_per_member = round(mean(total_speeches), 1),
+    .groups = "drop"
+  ) |>
+  arrange(desc(total_speeches))
+
+print(party_activity)
+```
+
+## Step 6: Advanced Queries with dplyr
+
+Get table references for direct dplyr querying:
+
+```{r dplyr-setup}
+# Get table references
+tbls <- get_hansard_tables(con)
+
+# Show table structure
+cat("Available tables:\n")
+for (name in names(tbls)) {
+  cat(" ", name, "\n")
+}
+```
+
+### Temporal Analysis
+
+```{r temporal-analysis}
+# Questions over time by party
+questions_by_party_year <- tbls$speeches |>
+  filter(is_question == 1) |>
+  left_join(tbls$members, by = "member_id") |>
+  left_join(tbls$sessions, by = "session_id") |>
+  count(party, year, sort = TRUE) |>
+  collect()
+
+# View results
+print(questions_by_party_year)
+
+# Monthly activity (for recent years)
+monthly_activity <- tbls$speeches |>
+  left_join(tbls$sessions, by = "session_id") |>
+  filter(year >= 2023) |>  # Adjust as needed
+  mutate(
+    month = substr(session_date, 1, 7)  # YYYY-MM format
+  ) |>
+  count(month, sort = TRUE) |>
+  collect()
+
+print(monthly_activity)
+```
+
+### Content Analysis
+
+```{r content-analysis}
+# Average speech length by party
+speech_length_by_party <- tbls$speeches |>
+  left_join(tbls$members, by = "member_id") |>
+  group_by(party) |>
+  summarise(
+    speech_count = n(),
+    avg_length = round(mean(content_length, na.rm = TRUE), 1),
+    median_length = round(median(content_length, na.rm = TRUE), 1),
+    total_words = sum(content_length, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  filter(speech_count >= 10) |>  # Only parties with substantial activity
+  arrange(desc(avg_length)) |>
+  collect()
+
+print(speech_length_by_party)
+
+# Most active debates
+popular_debates <- tbls$speeches |>
+  left_join(tbls$debates, by = "debate_id") |>
+  count(debate_title, sort = TRUE) |>
+  slice_head(n = 20) |>
+  collect()
+
+print(popular_debates)
+```
+
+### Member-Specific Analysis
+
+```{r member-analysis}
+# Most active members in recent sessions
+recent_speakers <- tbls$speeches |>
+  left_join(tbls$members, by = "member_id") |>
+  left_join(tbls$sessions, by = "session_id") |>
+  filter(year >= 2024) |>  # Adjust date range
+  group_by(full_name, party, electorate) |>
+  summarise(
+    sessions_active = n_distinct(session_id),
+    total_contributions = n(),
+    questions = sum(is_question, na.rm = TRUE),
+    answers = sum(is_answer, na.rm = TRUE),
+    avg_speech_length = round(mean(content_length, na.rm = TRUE), 1),
+    .groups = "drop"
+  ) |>
+  filter(total_contributions >= 5) |>
+  arrange(desc(total_contributions)) |>
+  collect()
+
+print(recent_speakers)
+```
+
+## Step 7: Text Search and Analysis
+
+### Simple Content Search
+
+```{r content-search}
+# Search for specific topics
+climate_mentions <- tbls$speeches |>
+  filter(grepl("climate", tolower(content))) |>
+  left_join(tbls$members, by = "member_id") |>
+  left_join(tbls$sessions, by = "session_id") |>
+  select(full_name, party, session_date, content_length) |>
+  arrange(desc(session_date)) |>
+  slice_head(n = 10) |>
+  collect()
+
+if (nrow(climate_mentions) > 0) {
+  cat("Recent 'climate' mentions:\n")
+  print(climate_mentions)
+} else {
+  cat("No 'climate' mentions found in current dataset\n")
+}
+```
+
+### Topic-Based Analysis
+
+```{r topic-analysis}
+# Questions vs Answers by party
+qa_balance <- tbls$speeches |>
+  left_join(tbls$members, by = "member_id") |>
+  group_by(party) |>
+  summarise(
+    questions = sum(is_question, na.rm = TRUE),
+    answers = sum(is_answer, na.rm = TRUE),
+    question_answer_ratio = round(
+      sum(is_question, na.rm = TRUE) / pmax(sum(is_answer, na.rm = TRUE), 1), 2
+    ),
+    .groups = "drop"
+  ) |>
+  filter(questions + answers >= 10) |>
+  arrange(desc(question_answer_ratio)) |>
+  collect()
+
+print(qa_balance)
+```
+
+## Step 8: Data Export for External Analysis
+
+### Export to CSV for R Analysis
+
+```{r data-export}
+# Export member statistics
+member_stats <- get_top_speakers(con, limit = 100)
+write.csv(member_stats, "member_activity_stats.csv", row.names = FALSE)
+
+# Export session summary
+session_summary <- tbls$sessions |>
+  left_join(
+    tbls$speeches |> 
+      group_by(session_id) |> 
+      summarise(
+        speech_count = n(),
+        question_count = sum(is_question, na.rm = TRUE),
+        avg_speech_length = round(mean(content_length, na.rm = TRUE), 1),
+        .groups = "drop"
+      ),
+    by = "session_id"
+  ) |>
+  collect()
+
+write.csv(session_summary, "session_summary.csv", row.names = FALSE)
+
+cat("Data exported to CSV files for external analysis\n")
+```
+
+## Step 9: Database Maintenance
+
+### Check Import Status
+
+```{r maintenance}
+# Check for any failed imports
+if (exists("combined_results")) {
+  failed_imports <- combined_results[!combined_results$success, ]
+  
+  if (nrow(failed_imports) > 0) {
+    cat("Files that failed to import:\n")
+    print(failed_imports[c("filename", "processed_at")])
+    
+    # Retry failed imports
+    cat("\nRetrying failed imports...\n")
+    retry_results <- import_hansard_batch(
+      failed_imports$file_path, 
+      con, 
+      validate = TRUE,
+      force_reimport = TRUE
+    )
+    print(retry_results)
+  } else {
+    cat("All files imported successfully!\n")
+  }
+}
+```
+
+### Database Optimization
+
+```{r optimization}
+# Get database file size
+if (file.exists(db_path)) {
+  db_size_mb <- round(file.size(db_path) / 1024^2, 1)
+  cat("Database size:", db_size_mb, "MB\n")
+}
+
+# Optimize database (SQLite maintenance)
+DBI::dbExecute(con, "VACUUM;")
+DBI::dbExecute(con, "ANALYZE;")
+
+cat("Database optimized\n")
+```
+
+## Cleanup
+
+```{r cleanup}
+# Close database connection when finished
+dbDisconnect(con)
+cat("Database connection closed\n")
+```
+
+## Next Steps
+
+With your Hansard data now in a structured database, you can:
+
+1. **Conduct longitudinal analysis** of parliamentary discourse
+2. **Perform text mining** and sentiment analysis on speech content
+3. **Analyse party dynamics** and question-answer patterns
+4. **Study member behaviour** across different topics and time periods
+5. **Export data** for use with other text analysis tools
+
+## Troubleshooting
+
+### Common Issues
+
+**File validation failures:**
+- Check file encoding (should be UTF-8)
+- Verify column names match expected schema
+- Ensure date format in filename is YYYY-MM-DD
+
+**Import errors:**
+- Use `force_reimport = TRUE` to overwrite existing sessions
+- Check database permissions and disk space
+- Validate file structure before import
+
+**Memory issues with large datasets:**
+- Process years individually rather than all at once
+- Use `progress = FALSE` to reduce overhead
+- Close and reconnect database periodically for long imports
+
+**Query performance:**
+- Database includes optimized indexes for common queries
+- Use `collect()` only when you need data in R
+- Filter early in dplyr chains to reduce data transfer
+
+For additional help, see the package documentation: `help(package = "hansardR")`
