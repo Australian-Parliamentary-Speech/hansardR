@@ -61,12 +61,13 @@ get_database_stats <- function(con) {
 #' @param con Database connection
 #' @param limit Number of speakers to return
 #' @return Data frame with speaker statistics
+#' @importFrom utils head
 #' @export
 get_top_speakers <- function(con, limit = 10) {
 
   tbls <- get_hansard_tables(con)
 
-  tbls$speeches |>
+  result <- tbls$speeches |>
     dplyr::left_join(tbls$members, by = "member_id") |>
     dplyr::group_by(full_name, party, electorate) |>
     dplyr::summarise(
@@ -78,6 +79,8 @@ get_top_speakers <- function(con, limit = 10) {
       .groups = "drop"
     ) |>
     dplyr::arrange(dplyr::desc(total_speeches)) |>
-    dplyr::slice_head(n = !!limit) |>
     dplyr::collect()
+
+  # Apply limit after collecting data
+  return(head(result, limit))
 }

@@ -1,6 +1,12 @@
 ---
 title: "Complete Hansard Data Processing Workflow"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
+  github_document:
+    toc: true
+    toc_depth: 2
 vignette: >
   %\VignetteIndexEntry{Complete Hansard Data Processing Workflow}
   %\VignetteEngine{knitr::rmarkdown}
@@ -11,7 +17,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = FALSE  # Set to TRUE when you have actual data files
+  eval = TRUE  # Now we can evaluate with sample data
 )
 ```
 
@@ -34,9 +40,26 @@ library(hansardR)
 library(dplyr)
 library(DBI)
 
-# Set paths for your system - UPDATE THESE PATHS
-base_path <- "~/HouseCSV"  # Directory containing year subdirectories (1901/, 1902/, etc.)
-db_path <- "hansard_analysis.db"  # Where to create the database
+# Use sample data included with the package
+sample_data_path <- system.file("extdata", "houseCSV", package = "hansardR")
+db_path <- tempfile(fileext = ".db")  # Use temporary database for vignette
+
+cat("Sample data location:", sample_data_path, "\n")
+cat("Temporary database:", db_path, "\n")
+
+# Show available sample data structure
+if (dir.exists(sample_data_path)) {
+  cat("\nAvailable sample years:\n")
+  year_dirs <- list.dirs(sample_data_path, recursive = FALSE, full.names = FALSE)
+  for (year in year_dirs) {
+    year_path <- file.path(sample_data_path, year)
+    files <- list.files(year_path, pattern = "*.csv")
+    cat(" ", year, ": ", length(files), " files\n")
+    for (file in files) {
+      cat("   -", file, "\n")
+    }
+  }
+}
 ```
 
 ## Step 1: Database Creation
@@ -62,18 +85,27 @@ The database includes optimised indexes for:
 Before processing, validate your CSV files to ensure data integrity:
 
 ```{r file-discovery}
-# Find all CSV files in your directory structure
-year_dirs <- list.dirs(base_path, recursive = FALSE, full.names = TRUE)
-year_dirs <- year_dirs[grepl("^\\d{4}$", basename(year_dirs))]  # Only 4-digit year directories
+# Find sample CSV files included with the package
+sample_years <- list.dirs(sample_data_path, recursive = FALSE, full.names = TRUE)
+sample_years <- sample_years[grepl("\\d{4}$", basename(sample_years))]  # Only year directories
 
-# Get sample of files for validation
+# Get all sample files
 sample_files <- c()
-for (year_dir in year_dirs[1:3]) {  # Check first 3 years
+for (year_dir in sample_years) {
   files <- list.files(year_dir, pattern = "*_edit_step7.csv", full.names = TRUE)
-  sample_files <- c(sample_files, files[1:min(5, length(files))])  # First 5 files per year
+  sample_files <- c(sample_files, files)
 }
 
-cat("Found", length(sample_files), "sample files for validation\n")
+cat("Found", length(sample_files), "sample files across", length(sample_years), "years:\n")
+cat("Years available:", paste(basename(sample_years), collapse = ", "), "\n")
+
+# Show file details
+for (file in sample_files) {
+  year <- basename(dirname(file))
+  filename <- basename(file)
+  size_kb <- round(file.size(file) / 1024, 1)
+  cat(" ", year, "/", filename, " (", size_kb, " KB)\n", sep = "")
+}
 ```
 
 ### File Structure Validation
@@ -127,57 +159,95 @@ if (length(valid_files) > 0) {
 ### Process a Single Year
 
 ```{r year-import}
-# Process all files from one year
-year_to_process <- "2025"  # Adjust as needed
-year_path <- file.path(base_path, year_to_process)
+# Process sample years
+sample_year_dirs <- list.dirs(sample_data_path, recursive = FALSE, full.names = TRUE)
+sample_year_dirs <- sample_year_dirs[grepl("\\d{4}$", basename(sample_year_dirs))]
 
-if (dir.exists(year_path)) {
-  cat("Processing year", year_to_process, "\n")
+for (year_dir in sample_year_dirs) {
+  year_name <- basename(year_dir)
+  cat("\n=== Processing", year_name, "===\n")
+  
+  # Show what files we're about to process
+  csv_files <- list.files(year_dir, pattern = "*_edit_step7.csv", full.names = TRUE)
+  cat("Files to process:\n")
+  for (file in csv_files) {
+    cat("  -", basename(file), "\n")
+  }
   
   year_results <- import_hansard_year(
-    year_path, 
+    year_dir, 
     con, 
     pattern = "*_edit_step7.csv",
     validate = TRUE,
-    progress = TRUE
+    progress = FALSE  # Disable progress bar in vignette
   )
   
-  # View results
-  print(year_results)
+  # Show results
+  if (nrow(year_results) > 0) {
+    successful <- sum(year_results$success)
+    total <- nrow(year_results)
+    cat("Result: Imported", successful, "out of", total, "files successfully\n")
+    
+    if (successful < total) {
+      failed_files <- year_results$filename[!year_results$success]
+      cat("Failed files:", paste(failed_files, collapse = ", "), "\n")
+    }
+  }
 }
 ```
 
 ### Process Multiple Years
 
 ```{r multi-year-import}
-# Process several years (adjust range as needed)
-years_to_process <- c("2023", "2024", "2025")
+# Process both available years in the sample data
+available_years <- basename(list.dirs(sample_data_path, recursive = FALSE, full.names = FALSE))
+available_years <- available_years[grepl("^\\d{4}$", available_years)]
+
+cat("Processing all available sample years:", paste(available_years, collapse = ", "), "\n")
 
 all_results <- list()
 
-for (year in years_to_process) {
-  year_path <- file.path(base_path, year)
+for (year in available_years) {
+  year_path <- file.path(sample_data_path, year)
   
   if (dir.exists(year_path)) {
     cat("\n=== Processing", year, "===\n")
+    
+    # Show what we're processing
+    csv_files <- list.files(year_path, pattern = "*_edit_step7.csv")
+    cat("Found", length(csv_files), "CSV files in", year, "\n")
     
     year_results <- import_hansard_year(
       year_path, 
       con,
       validate = TRUE,
       force_reimport = FALSE,  # Skip existing sessions
-      progress = TRUE
+      progress = FALSE
     )
     
     all_results[[year]] <- year_results
+    
+    # Show summary
+    if (nrow(year_results) > 0) {
+      successful <- sum(year_results$success)
+      total <- nrow(year_results)
+      cat("Summary:", successful, "/", total, "files imported successfully\n")
+    }
   } else {
     cat("Directory not found:", year_path, "\n")
   }
 }
 
 # Combine results
-combined_results <- do.call(rbind, all_results)
-print(combined_results)
+if (length(all_results) > 0) {
+  combined_results <- do.call(rbind, all_results)
+  cat("\n=== Overall Import Summary ===\n")
+  total_files <- nrow(combined_results)
+  total_successful <- sum(combined_results$success)
+  cat("Total files processed:", total_files, "\n")
+  cat("Successfully imported:", total_successful, "\n")
+  cat("Success rate:", round(100 * total_successful / total_files, 1), "%\n")
+}
 ```
 
 ## Step 5: Data Exploration
@@ -242,7 +312,7 @@ for (name in names(tbls)) {
 ### Temporal Analysis
 
 ```{r temporal-analysis}
-# Questions over time by party
+# Questions over time by party (using our sample data)
 questions_by_party_year <- tbls$speeches |>
   filter(is_question == 1) |>
   left_join(tbls$members, by = "member_id") |>
@@ -250,28 +320,38 @@ questions_by_party_year <- tbls$speeches |>
   count(party, year, sort = TRUE) |>
   collect()
 
-# View results
-print(questions_by_party_year)
+if (nrow(questions_by_party_year) > 0) {
+  cat("Questions by party and year in sample data:\n")
+  print(questions_by_party_year)
+} else {
+  cat("No questions found in sample data\n")
+}
 
-# Monthly activity (for recent years)
-monthly_activity <- tbls$speeches |>
+# Session-level activity (all speech types)
+session_activity <- tbls$speeches |>
   left_join(tbls$sessions, by = "session_id") |>
-  filter(year >= 2023) |>  # Adjust as needed
-  mutate(
-    month = substr(session_date, 1, 7)  # YYYY-MM format
+  group_by(session_date, year) |>
+  summarise(
+    total_speeches = n(),
+    questions = sum(is_question, na.rm = TRUE),
+    answers = sum(is_answer, na.rm = TRUE),
+    interjections = sum(is_interjection, na.rm = TRUE),
+    .groups = "drop"
   ) |>
-  count(month, sort = TRUE) |>
+  arrange(session_date) |>
   collect()
 
-print(monthly_activity)
+cat("\nSession-level activity:\n")
+print(session_activity)
 ```
 
 ### Content Analysis
 
 ```{r content-analysis}
-# Average speech length by party
+# Average speech length by party (using sample data)
 speech_length_by_party <- tbls$speeches |>
   left_join(tbls$members, by = "member_id") |>
+  filter(!is.na(party)) |>  # Only include rows with party information
   group_by(party) |>
   summarise(
     speech_count = n(),
@@ -280,44 +360,71 @@ speech_length_by_party <- tbls$speeches |>
     total_words = sum(content_length, na.rm = TRUE),
     .groups = "drop"
   ) |>
-  filter(speech_count >= 10) |>  # Only parties with substantial activity
+  filter(speech_count >= 1) |>  # Include all parties in sample data
   arrange(desc(avg_length)) |>
   collect()
 
+cat("Speech length statistics by party:\n")
 print(speech_length_by_party)
 
-# Most active debates
+# Most active debates in sample data
 popular_debates <- tbls$speeches |>
   left_join(tbls$debates, by = "debate_id") |>
+  filter(!is.na(debate_title)) |>
   count(debate_title, sort = TRUE) |>
-  slice_head(n = 20) |>
   collect()
 
+cat("\nMost discussed topics in sample data:\n")
 print(popular_debates)
+
+# Speech type distribution
+speech_types <- tbls$speeches |>
+  summarise(
+    total_records = n(),
+    questions = sum(is_question, na.rm = TRUE),
+    answers = sum(is_answer, na.rm = TRUE),
+    speeches = sum(is_speech, na.rm = TRUE),
+    interjections = sum(is_interjection, na.rm = TRUE),
+    stage_directions = sum(is_stage_direction, na.rm = TRUE)
+  ) |>
+  collect()
+
+cat("\nSpeech type distribution in sample data:\n")
+print(speech_types)
 ```
 
 ### Member-Specific Analysis
 
 ```{r member-analysis}
-# Most active members in recent sessions
-recent_speakers <- tbls$speeches |>
+# Most active members in sample data
+sample_speakers <- tbls$speeches |>
   left_join(tbls$members, by = "member_id") |>
   left_join(tbls$sessions, by = "session_id") |>
-  filter(year >= 2024) |>  # Adjust date range
+  filter(!is.na(full_name)) |>  # Only include identified speakers
   group_by(full_name, party, electorate) |>
   summarise(
     sessions_active = n_distinct(session_id),
     total_contributions = n(),
     questions = sum(is_question, na.rm = TRUE),
     answers = sum(is_answer, na.rm = TRUE),
+    speeches = sum(is_speech, na.rm = TRUE),
     avg_speech_length = round(mean(content_length, na.rm = TRUE), 1),
     .groups = "drop"
   ) |>
-  filter(total_contributions >= 5) |>
   arrange(desc(total_contributions)) |>
   collect()
 
-print(recent_speakers)
+cat("Member activity in sample data:\n")
+print(sample_speakers)
+
+# Party representation in sample
+party_summary <- tbls$members |>
+  filter(!is.na(party)) |>
+  count(party, sort = TRUE) |>
+  collect()
+
+cat("\nParty representation in sample data:\n")
+print(party_summary)
 ```
 
 ## Step 7: Text Search and Analysis
@@ -325,21 +432,80 @@ print(recent_speakers)
 ### Simple Content Search
 
 ```{r content-search}
-# Search for specific topics
-climate_mentions <- tbls$speeches |>
-  filter(grepl("climate", tolower(content))) |>
-  left_join(tbls$members, by = "member_id") |>
-  left_join(tbls$sessions, by = "session_id") |>
-  select(full_name, party, session_date, content_length) |>
-  arrange(desc(session_date)) |>
-  slice_head(n = 10) |>
-  collect()
+# Search for specific topics using database-friendly approach
+# Note: grepl() doesn't work with databases, so we use direct SQL
+climate_mentions <- DBI::dbGetQuery(con, "
+  SELECT 
+    m.full_name,
+    m.party, 
+    s.session_date,
+    sp.content_length,
+    SUBSTR(sp.content, 1, 100) || '...' as content_preview
+  FROM speeches sp
+  LEFT JOIN members m ON sp.member_id = m.member_id  
+  LEFT JOIN sessions s ON sp.session_id = s.session_id
+  WHERE LOWER(sp.content) LIKE '%climate%'
+  ORDER BY s.session_date DESC
+  LIMIT 10
+")
 
 if (nrow(climate_mentions) > 0) {
   cat("Recent 'climate' mentions:\n")
   print(climate_mentions)
 } else {
   cat("No 'climate' mentions found in current dataset\n")
+  
+  # Try a broader search
+  any_mentions <- DBI::dbGetQuery(con, "
+    SELECT COUNT(*) as total_speeches
+    FROM speeches 
+    WHERE content IS NOT NULL AND LENGTH(content) > 10
+  ")
+  cat("Total speeches with content:", any_mentions$total_speeches, "\n")
+}
+
+# Example of other search terms you might use
+search_terms <- c("economy", "health", "education", "budget")
+for (term in search_terms) {
+  count_query <- paste0("
+    SELECT COUNT(*) as count 
+    FROM speeches 
+    WHERE LOWER(content) LIKE '%", tolower(term), "%'
+  ")
+  
+  result <- DBI::dbGetQuery(con, count_query)
+  if (result$count > 0) {
+    cat("Found", result$count, "mentions of '", term, "'\n")
+  }
+}
+```
+
+### Alternative Database-Friendly Search Pattern
+
+For better performance with large databases, you can also use this pattern:
+
+```{r content-search-efficient}
+# More efficient search for large databases
+# Search with LIMIT in SQL rather than collecting all results
+climate_search <- DBI::dbGetQuery(con, "
+  SELECT 
+    m.full_name,
+    m.party, 
+    s.session_date,
+    sp.content_length
+  FROM speeches sp
+  LEFT JOIN members m ON sp.member_id = m.member_id  
+  LEFT JOIN sessions s ON sp.session_id = s.session_id
+  WHERE sp.content LIKE '%climate%'
+  ORDER BY s.session_date DESC
+  LIMIT 10
+")
+
+if (nrow(climate_search) > 0) {
+  cat("Climate mentions using direct SQL:\n")
+  print(climate_search)
+} else {
+  cat("No climate mentions found\n")
 }
 ```
 
