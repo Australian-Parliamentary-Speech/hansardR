@@ -26,11 +26,13 @@ A comprehensive R toolkit for processing, validating, and analysing Australian P
 
 ## Features
 
-- 🗃️ **Database Creation**: Structured SQLite storage with optimised indexes
+- 🗃️ **Database Creation**: Structured SQLite storage with optimised indexes and triggers
 - ✅ **File Validation**: Comprehensive CSV structure and integrity checking  
 - 📊 **Batch Processing**: Efficient import of large datasets with progress tracking
 - 🔍 **Advanced Querying**: dplyr-compatible database interface for analysis
+- 🔎 **Full-Text Search**: SQLite FTS5 powered content search with highlighting
 - 📈 **Built-in Analytics**: Speaker statistics, temporal analysis, and content metrics
+- ⚡ **Performance Optimized**: Strategic indexing and database triggers for speed
 - 🛠️ **Modular Design**: Separate validation, processing, and analysis workflows
 - 📚 **Rich Documentation**: Comprehensive vignettes and examples
 
@@ -106,13 +108,17 @@ browseVignettes("hansardR")
 
 | Function | Purpose |
 |----------|---------|
-| `create_hansard_database()` | Create structured SQLite database |
+| `create_hansard_database()` | Create structured SQLite database with optimizations |
+| `optimize_hansard_database()` | Apply performance optimizations to existing database |
 | `validate_csv_structure()` | Check file integrity before processing |
 | `import_hansard_file()` | Import single CSV file |
 | `import_hansard_batch()` | Import multiple files with progress tracking |
 | `import_hansard_year()` | Import all files from a year directory |
 | `get_hansard_tables()` | Get dplyr table references for analysis |
 | `get_top_speakers()` | Built-in speaker activity analysis |
+| `search_speech_content()` | Full-text search of speech content with highlighting |
+| `search_speeches_advanced()` | Advanced search combining content and metadata filters |
+| `get_content_statistics()` | Content analysis and search capability statistics |
 
 ## Data Structure
 
@@ -132,9 +138,10 @@ erDiagram
     SESSIONS {
         int session_id PK
         date session_date UK
-        int year
+        int year "Generated"
         int chamber_type
         text source_file
+        text file_hash
         datetime created_at
     }
     
@@ -145,16 +152,21 @@ erDiagram
         text electorate
         text party
         text role
+        text status "active/inactive/unknown"
         date first_seen_date
         date last_seen_date
+        date first_parliament_date
+        date last_parliament_date
         datetime created_at
     }
     
     DEBATES {
         int debate_id PK
         int session_id FK
+        int parent_debate_id FK "Self-reference"
         text debate_title
         int debate_order
+        int debate_level "Hierarchy level"
         datetime created_at
     }
     
@@ -174,14 +186,21 @@ erDiagram
         bool is_interjection
         bool is_speech
         bool is_stage_direction
-        int content_length
+        int content_length "Generated"
         datetime created_at
+    }
+    
+    SPEECHES_FTS {
+        int rowid FK "Links to speech_id"
+        text content "Full-text indexed"
     }
 
     SESSIONS ||--o{ DEBATES : "has"
     SESSIONS ||--o{ SPEECHES : "contains"
     MEMBERS ||--o{ SPEECHES : "gives"
     DEBATES ||--o{ SPEECHES : "includes"
+    DEBATES ||--o{ DEBATES : "parent_of"
+    SPEECHES ||--|| SPEECHES_FTS : "indexed_by"
 ```
 
 ### Data processing workflow
@@ -266,6 +285,26 @@ monthly_activity <- tbls$speeches |>
   collect()
 ```
 
+### Full-Text Search
+
+```{r eval=FALSE}
+# Search for climate change mentions
+climate_speeches <- search_speech_content(con, "climate change", limit = 50)
+
+# Advanced search: ALP members discussing renewable energy since 2024
+renewable_search <- search_speeches_advanced(
+  con,
+  content_query = "renewable energy",
+  party = "ALP", 
+  date_from = "2024-01-01",
+  limit = 25
+)
+
+# Get search statistics
+search_stats <- get_content_statistics(con)
+print(search_stats$basic)
+```
+
 ## File Format
 
 The package expects CSV files with Australian Parliamentary Hansard structure:
@@ -276,13 +315,16 @@ The package expects CSV files with Australian Parliamentary Hansard structure:
 
 ## Performance
 
-Designed for large-scale parliamentary data:
+Designed for large-scale parliamentary data with enterprise-level optimizations:
 
 - ✅ Handles 100+ years of parliamentary data (1901-2025)
 - ✅ Efficient batch processing with transaction management
-- ✅ Optimised database indexes for common queries
+- ✅ Strategic database indexing with 15+ optimized indexes
+- ✅ Full-text search with SQLite FTS5 and BM25 ranking
+- ✅ Automatic database triggers for data validation and maintenance
 - ✅ Memory-efficient streaming for large files
 - ✅ Progress tracking for long-running operations
+- ✅ Database optimization functions for existing installations
 
 ## Contributing
 
