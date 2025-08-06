@@ -4,11 +4,15 @@
 #'
 #' @param file_path Path to CSV file
 #' @param con Database connection
+#' @param chamber Chamber type: "house" or "senate"
 #' @param validate Should file be validated first?
 #' @param force_reimport Should existing session be overwritten?
 #' @return Boolean indicating success
 #' @export
-import_hansard_file <- function(file_path, con, validate = TRUE, force_reimport = FALSE) {
+import_hansard_file <- function(file_path, con, chamber = c("house", "senate"), validate = TRUE, force_reimport = FALSE) {
+  
+  # Validate chamber parameter
+  chamber <- match.arg(chamber)
 
   message("Processing: ", basename(file_path))
 
@@ -25,10 +29,10 @@ import_hansard_file <- function(file_path, con, validate = TRUE, force_reimport 
     return(FALSE)
   }
 
-  # Check if session already exists
+  # Check if session already exists (by date and chamber combination)
   existing_session <- DBI::dbGetQuery(con,
-                                      "SELECT session_id FROM sessions WHERE session_date = ?",
-                                      params = list(session_date)
+                                      "SELECT session_id FROM sessions WHERE session_date = ? AND chamber = ?",
+                                      params = list(session_date, chamber)
   )
 
   if (nrow(existing_session) > 0 && !force_reimport) {
@@ -38,7 +42,7 @@ import_hansard_file <- function(file_path, con, validate = TRUE, force_reimport 
 
   # Import the data
   success <- tryCatch({
-    import_session_data(df, con, force_reimport)
+    import_session_data(df, con, chamber, force_reimport)
     TRUE
   }, error = function(e) {
     message("  x Import failed: ", conditionMessage(e))
@@ -58,8 +62,9 @@ import_hansard_file <- function(file_path, con, validate = TRUE, force_reimport 
 #'
 #' @param df Data frame with session data
 #' @param con Database connection
+#' @param chamber Chamber type ("house" or "senate")
 #' @param force_reimport Should existing session be replaced?
-import_session_data <- function(df, con, force_reimport = FALSE) {
+import_session_data <- function(df, con, chamber, force_reimport = FALSE) {
 
   session_date <- df$session_date[1]
   filename <- df$source_file[1]
@@ -71,8 +76,8 @@ import_session_data <- function(df, con, force_reimport = FALSE) {
     # Handle existing session
     if (force_reimport) {
       existing_session <- DBI::dbGetQuery(con,
-                                          "SELECT session_id FROM sessions WHERE session_date = ?",
-                                          params = list(session_date)
+                                          "SELECT session_id FROM sessions WHERE session_date = ? AND chamber = ?",
+                                          params = list(session_date, chamber)
       )
 
       if (nrow(existing_session) > 0) {
@@ -80,14 +85,21 @@ import_session_data <- function(df, con, force_reimport = FALSE) {
         # Delete existing data
         DBI::dbExecute(con, "DELETE FROM speeches WHERE session_id = ?", params = list(session_id))
         DBI::dbExecute(con, "DELETE FROM debates WHERE session_id = ?", params = list(session_id))
-        DBI::dbExecute(con, "UPDATE sessions SET source_file = ? WHERE session_id = ?",
-                       params = list(filename, session_id))
+        DBI::dbExecute(con, "UPDATE sessions SET source_file = ?, chamber = ? WHERE session_id = ?",
+                       params = list(filename, chamber, session_id))
+      } else {
+        # Create new session (even in force_reimport mode if not found)
+        DBI::dbExecute(con,
+                       "INSERT INTO sessions (session_date, chamber, source_file) VALUES (?, ?, ?)",
+                       params = list(session_date, chamber, filename)
+        )
+        session_id <- DBI::dbGetQuery(con, "SELECT last_insert_rowid() as id")$id
       }
     } else {
       # Create new session
       DBI::dbExecute(con,
-                     "INSERT INTO sessions (session_date, chamber_type, source_file) VALUES (?, ?, ?)",
-                     params = list(session_date, df$chamber_flag[1], filename)
+                     "INSERT INTO sessions (session_date, chamber, source_file) VALUES (?, ?, ?)",
+                     params = list(session_date, chamber, filename)
       )
       session_id <- DBI::dbGetQuery(con, "SELECT last_insert_rowid() as id")$id
     }

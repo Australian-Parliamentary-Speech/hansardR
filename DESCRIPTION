@@ -2,6 +2,8 @@ Package: hansardR
 Type: Package
 Title: Process Australian Parliamentary Hansard Data from a gazillion csv files
 Version: 0.1.0
+Author: Kenneth Benoit [aut, cre] (<https://orcid.org/0000-0002-0797-564X>)
+Maintainer: Kenneth Benoit <kbenoit@smu.edu.sg>
 Authors@R: c(
     person("Kenneth", "Benoit", email = "kbenoit@smu.edu.sg", role = c("cre", "aut"), comment = c(ORCID = "0000-0002-0797-564X"))
   )

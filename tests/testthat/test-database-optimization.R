@@ -73,7 +73,7 @@ test_that("full-text search functions work", {
   on.exit(DBI::dbDisconnect(con), add = TRUE)
   
   # Insert sample data
-  DBI::dbExecute(con, "INSERT INTO sessions (session_date, chamber_type, source_file) VALUES ('2024-01-01', 1, 'test.csv')")
+  DBI::dbExecute(con, "INSERT INTO sessions (session_date, chamber, source_file) VALUES ('2024-01-01', 'house', 'test.csv')")
   DBI::dbExecute(con, "INSERT INTO members (name_id, full_name, party, electorate) VALUES ('TEST001', 'Test Member', 'ALP', 'Sydney')")
   DBI::dbExecute(con, "INSERT INTO debates (session_id, debate_title, debate_order) VALUES (1, 'Test Debate', 1)")
   DBI::dbExecute(con, "INSERT INTO speeches (session_id, debate_id, member_id, content) VALUES (1, 1, 1, 'This is a test speech about climate change and renewable energy')")

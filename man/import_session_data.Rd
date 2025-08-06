@@ -4,12 +4,14 @@
 \alias{import_session_data}
 \title{Import Session Data}
 \usage{
-import_session_data(df, con, force_reimport = FALSE)
+import_session_data(df, con, chamber, force_reimport = FALSE)
 }
 \arguments{
 \item{df}{Data frame with session data}
 
 \item{con}{Database connection}
+
+\item{chamber}{Chamber type ("house" or "senate")}
 
 \item{force_reimport}{Should existing session be replaced?}
 }

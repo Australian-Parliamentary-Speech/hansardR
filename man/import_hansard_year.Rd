@@ -4,12 +4,20 @@
 \alias{import_hansard_year}
 \title{Import Year Directory}
 \usage{
-import_hansard_year(year_dir, con, pattern = "*_edit_step7.csv", ...)
+import_hansard_year(
+  year_dir,
+  con,
+  chamber = c("house", "senate"),
+  pattern = "*_edit_step7.csv",
+  ...
+)
 }
 \arguments{
 \item{year_dir}{Path to year directory}
 
 \item{con}{Database connection}
+
+\item{chamber}{Chamber type: "house" or "senate"}
 
 \item{pattern}{File pattern to match}
 

@@ -2,12 +2,16 @@
 #'
 #' @param file_paths Vector of file paths
 #' @param con Database connection
+#' @param chamber Chamber type: "house" or "senate"
 #' @param validate Should files be validated?
 #' @param force_reimport Should existing sessions be overwritten?
 #' @param progress Show progress bar?
 #' @return Summary of import results
 #' @export
-import_hansard_batch <- function(file_paths, con, validate = TRUE, force_reimport = FALSE, progress = TRUE) {
+import_hansard_batch <- function(file_paths, con, chamber = c("house", "senate"), validate = TRUE, force_reimport = FALSE, progress = TRUE) {
+  
+  # Validate chamber parameter
+  chamber <- match.arg(chamber)
 
   if (progress && requireNamespace("progress", quietly = TRUE)) {
     pb <- progress::progress_bar$new(
@@ -19,7 +23,7 @@ import_hansard_batch <- function(file_paths, con, validate = TRUE, force_reimpor
   results <- purrr::map_dfr(file_paths, ~ {
     if (progress && exists("pb")) pb$tick()
 
-    success <- import_hansard_file(.x, con, validate, force_reimport)
+    success <- import_hansard_file(.x, con, chamber, validate, force_reimport)
 
     tibble::tibble(
       file_path = .x,
@@ -48,11 +52,15 @@ import_hansard_batch <- function(file_paths, con, validate = TRUE, force_reimpor
 #'
 #' @param year_dir Path to year directory
 #' @param con Database connection
+#' @param chamber Chamber type: "house" or "senate"
 #' @param pattern File pattern to match
 #' @param ... Additional arguments passed to import_hansard_batch
 #' @return Import results
 #' @export
-import_hansard_year <- function(year_dir, con, pattern = "*_edit_step7.csv", ...) {
+import_hansard_year <- function(year_dir, con, chamber = c("house", "senate"), pattern = "*_edit_step7.csv", ...) {
+  
+  # Validate chamber parameter
+  chamber <- match.arg(chamber)
 
   csv_files <- list.files(year_dir, pattern = utils::glob2rx(pattern), full.names = TRUE)
 
@@ -63,7 +71,7 @@ import_hansard_year <- function(year_dir, con, pattern = "*_edit_step7.csv", ...
 
   message("Processing ", basename(year_dir), " (", length(csv_files), " files)")
 
-  results <- import_hansard_batch(csv_files, con, ...)
+  results <- import_hansard_batch(csv_files, con, chamber, ...)
 
   return(results)
 }

@@ -4,12 +4,20 @@
 \alias{import_hansard_file}
 \title{Import Single CSV File to Database}
 \usage{
-import_hansard_file(file_path, con, validate = TRUE, force_reimport = FALSE)
+import_hansard_file(
+  file_path,
+  con,
+  chamber = c("house", "senate"),
+  validate = TRUE,
+  force_reimport = FALSE
+)
 }
 \arguments{
 \item{file_path}{Path to CSV file}
 
 \item{con}{Database connection}
+
+\item{chamber}{Chamber type: "house" or "senate"}
 
 \item{validate}{Should file be validated first?}
 

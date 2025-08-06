@@ -119,15 +119,18 @@ create_standard_schema <- function(con) {
     sessions = "
       CREATE TABLE IF NOT EXISTS sessions (
         session_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        session_date DATE NOT NULL UNIQUE,
+        session_date DATE NOT NULL,
+        chamber TEXT CHECK(chamber IN ('house', 'senate')) NOT NULL,
         year INTEGER GENERATED ALWAYS AS (CAST(strftime('%Y', session_date) AS INTEGER)) STORED,
-        chamber_type INTEGER,
         source_file TEXT NOT NULL,
         file_hash TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(session_date, chamber)
       );
       CREATE INDEX IF NOT EXISTS idx_sessions_date ON sessions(session_date);
       CREATE INDEX IF NOT EXISTS idx_sessions_year ON sessions(year);
+      CREATE INDEX IF NOT EXISTS idx_sessions_chamber ON sessions(chamber);
+      CREATE INDEX IF NOT EXISTS idx_sessions_date_chamber ON sessions(session_date, chamber);
     ",
 
     members = "
@@ -313,6 +316,15 @@ optimize_hansard_database <- function(con) {
 #' @param con Database connection
 add_columns_if_missing <- function(con) {
   
+  # Check and add columns to sessions table
+  sessions_columns <- DBI::dbListFields(con, "sessions")
+  
+  if (!"chamber" %in% sessions_columns) {
+    # Add chamber column - existing records will need to be updated manually
+    DBI::dbExecute(con, "ALTER TABLE sessions ADD COLUMN chamber TEXT CHECK(chamber IN ('house', 'senate'));")
+    warning("Added chamber column to sessions table. Existing records will have NULL chamber values and need to be updated manually.")
+  }
+  
   # Check and add columns to members table
   members_columns <- DBI::dbListFields(con, "members")
   
@@ -346,6 +358,8 @@ add_columns_if_missing <- function(con) {
 create_optimization_indexes <- function(con) {
   
   index_statements <- c(
+    "CREATE INDEX IF NOT EXISTS idx_sessions_chamber ON sessions(chamber);",
+    "CREATE INDEX IF NOT EXISTS idx_sessions_date_chamber ON sessions(session_date, chamber);",
     "CREATE INDEX IF NOT EXISTS idx_members_party_electorate ON members(party, electorate);",
     "CREATE INDEX IF NOT EXISTS idx_members_status ON members(status);",
     "CREATE INDEX IF NOT EXISTS idx_debates_hierarchy ON debates(parent_debate_id, debate_level);",

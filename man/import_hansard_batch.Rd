@@ -7,6 +7,7 @@
 import_hansard_batch(
   file_paths,
   con,
+  chamber = c("house", "senate"),
   validate = TRUE,
   force_reimport = FALSE,
   progress = TRUE
@@ -16,6 +17,8 @@ import_hansard_batch(
 \item{file_paths}{Vector of file paths}
 
 \item{con}{Database connection}
+
+\item{chamber}{Chamber type: "house" or "senate"}
 
 \item{validate}{Should files be validated?}
 
