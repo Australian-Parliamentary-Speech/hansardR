@@ -225,18 +225,18 @@
 <li>
 <strong>speeches</strong>: Individual contributions, questions, answers, and interjections</li>
 </ul>
-</div>
-<div class="section level2">
-<h2 id="database-schema">Database Schema<a class="anchor" aria-label="anchor" href="#database-schema"></a>
-</h2>
+<div class="section level3">
+<h3 id="database-schema">Database Schema<a class="anchor" aria-label="anchor" href="#database-schema"></a>
+</h3>
 <p>The package creates a normalised relational database optimised for parliamentary data analysis:</p>
 <pre class="mermaid"><code>erDiagram
     SESSIONS {
         int session_id PK
         date session_date UK
-        int year
+        int year "Generated"
         int chamber_type
         text source_file
+        text file_hash
         datetime created_at
     }
 
@@ -247,28 +247,68 @@
         text electorate
         text party
         text role
+        text status "active/inactive/unknown"
         date first_seen_date
         date last_seen_date
+        date first_parliament_date
+        date last_parliament_date
         datetime created_at
+    }
+
+    DEBATES {
+        int debate_id PK
+        int session_id FK
+        int parent_debate_id FK "References debate_id for hierarchy"
+        text debate_title
+        int debate_order
+        int debate_level "Hierarchy level"
+        datetime created_at
+    }
+
+    SPEECHES {
+        int speech_id PK
+        int session_id FK
+        int debate_id FK
+        int member_id FK
+        int speaker_no
+        time speech_time
+        real page_no
+        text content
+        text subdebate_info
+        text xml_path
+        bool is_question
+        bool is_answer
+        bool is_interjection
+        bool is_speech
+        bool is_stage_direction
+        int content_length "Generated"
+        datetime created_at
+    }
+
+    SPEECHES_FTS {
+        int rowid FK "Links to speech_id"
+        text content "Full-text indexed"
     }
 
     SESSIONS ||--o{ DEBATES : "has"
     SESSIONS ||--o{ SPEECHES : "contains"
     MEMBERS ||--o{ SPEECHES : "gives"
-    DEBATES ||--o{ SPEECHES : "includes"</code></pre>
+    DEBATES ||--o{ SPEECHES : "includes"
+    SPEECHES ||--|| SPEECHES_FTS : "indexed_by"</code></pre>
 </div>
-<div class="section level2">
-<h2 id="data-processing-workflow">Data Processing Workflow<a class="anchor" aria-label="anchor" href="#data-processing-workflow"></a>
-</h2>
+<div class="section level3">
+<h3 id="data-processing-workflow">Data processing workflow<a class="anchor" aria-label="anchor" href="#data-processing-workflow"></a>
+</h3>
 <pre class="mermaid"><code>flowchart TD
-    A[CSV Files] --&gt; B{File Validation}
+
+    A[CSV Files&lt;br/&gt;2025-02-04_edit_step7.csv] --&gt; B{File Validation}
     B --&gt;|Valid| C[Load &amp; Clean Data]
     B --&gt;|Invalid| D[Report Issues]
 
-    C --&gt; E[Extract Session Info]
-    C --&gt; F[Extract Members]
-    C --&gt; G[Extract Debates]
-    C --&gt; H[Extract Speeches]
+    C --&gt; E[Extract Session Info&lt;br/&gt;Date, Chamber, Source]
+    C --&gt; F[Extract Members&lt;br/&gt;Name, Party, Electorate]
+    C --&gt; G[Extract Debates&lt;br/&gt;Topics, Order]
+    C --&gt; H[Extract Speeches&lt;br/&gt;Content, Flags, Metadata]
 
     E --&gt; I[(Sessions Table)]
     F --&gt; J[(Members Table)]
@@ -282,7 +322,18 @@
 
     M --&gt; N[dplyr Queries]
     M --&gt; O[SQL Queries]
-    M --&gt; P[Text Mining]</code></pre>
+    M --&gt; P[Text Mining]
+
+    N --&gt; Q[Speaker Statistics]
+    O --&gt; R[Temporal Analysis]
+    P --&gt; S[Content Analysis]
+
+    style A fill:#e1f5fe
+    style M fill:#f3e5f5
+    style Q fill:#e8f5e8
+    style R fill:#e8f5e8
+    style S fill:#e8f5e8</code></pre>
+</div>
 </div>
 <div class="section level2">
 <h2 id="example-analyses">Example Analyses<a class="anchor" aria-label="anchor" href="#example-analyses"></a>
