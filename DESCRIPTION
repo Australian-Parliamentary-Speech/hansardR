@@ -26,7 +26,8 @@ Suggests:
     progress,
     knitr,
     rmarkdown,
-    dbplyr
+    dbplyr,
+    covr
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
