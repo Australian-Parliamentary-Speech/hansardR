@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style type="text/css">
+@font-face {
+font-family: octicons-link;
+src: url(data:font/woff;charset=utf-8;base64,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) format('woff');
+}
+body {
+-webkit-text-size-adjust: 100%;
+text-size-adjust: 100%;
+color: #333;
+font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+font-size: 16px;
+line-height: 1.6;
+word-wrap: break-word;
+}
+a {
+background-color: transparent;
+}
+a:active,
+a:hover {
+outline: 0;
+}
+strong {
+font-weight: bold;
+}
+h1 {
+font-size: 2em;
+margin: 0.67em 0;
+}
+img {
+border: 0;
+}
+hr {
+box-sizing: content-box;
+height: 0;
+}
+pre {
+overflow: auto;
+}
+code,
+kbd,
+pre {
+font-family: monospace, monospace;
+font-size: 1em;
+}
+input {
+color: inherit;
+font: inherit;
+margin: 0;
+}
+html input[disabled] {
+cursor: default;
+}
+input {
+line-height: normal;
+}
+input[type="checkbox"] {
+box-sizing: border-box;
+padding: 0;
+}
+table {
+border-collapse: collapse;
+border-spacing: 0;
+}
+td,
+th {
+padding: 0;
+}
+* {
+box-sizing: border-box;
+}
+input {
+font: 13px / 1.4 Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+a {
+color: #4078c0;
+text-decoration: none;
+}
+a:hover,
+a:active {
+text-decoration: underline;
+}
+hr {
+height: 0;
+margin: 15px 0;
+overflow: hidden;
+background: transparent;
+border: 0;
+border-bottom: 1px solid #ddd;
+}
+hr:before {
+display: table;
+content: "";
+}
+hr:after {
+display: table;
+clear: both;
+content: "";
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+margin-top: 15px;
+margin-bottom: 15px;
+line-height: 1.1;
+}
+h1 {
+font-size: 30px;
+}
+h2 {
+font-size: 21px;
+}
+h3 {
+font-size: 16px;
+}
+h4 {
+font-size: 14px;
+}
+h5 {
+font-size: 12px;
+}
+h6 {
+font-size: 11px;
+}
+blockquote {
+margin: 0;
+}
+ul,
+ol {
+padding: 0;
+margin-top: 0;
+margin-bottom: 0;
+}
+ol ol,
+ul ol {
+list-style-type: lower-roman;
+}
+ul ul ol,
+ul ol ol,
+ol ul ol,
+ol ol ol {
+list-style-type: lower-alpha;
+}
+dd {
+margin-left: 0;
+}
+code {
+font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+font-size: 12px;
+}
+pre {
+margin-top: 0;
+margin-bottom: 0;
+font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+.select::-ms-expand {
+opacity: 0;
+}
+.octicon {
+font: normal normal normal 16px/1 octicons-link;
+display: inline-block;
+text-decoration: none;
+text-rendering: auto;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+}
+.octicon-link:before {
+content: '\f05c';
+}
+.markdown-body:before {
+display: table;
+content: "";
+}
+.markdown-body:after {
+display: table;
+clear: both;
+content: "";
+}
+.markdown-body>*:first-child {
+margin-top: 0 !important;
+}
+.markdown-body>*:last-child {
+margin-bottom: 0 !important;
+}
+a:not([href]) {
+color: inherit;
+text-decoration: none;
+}
+.anchor {
+display: inline-block;
+padding-right: 2px;
+margin-left: -18px;
+}
+.anchor:focus {
+outline: none;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+margin-top: 1em;
+margin-bottom: 16px;
+font-weight: bold;
+line-height: 1.4;
+}
+h1 .octicon-link,
+h2 .octicon-link,
+h3 .octicon-link,
+h4 .octicon-link,
+h5 .octicon-link,
+h6 .octicon-link {
+color: #000;
+vertical-align: middle;
+visibility: hidden;
+}
+h1:hover .anchor,
+h2:hover .anchor,
+h3:hover .anchor,
+h4:hover .anchor,
+h5:hover .anchor,
+h6:hover .anchor {
+text-decoration: none;
+}
+h1:hover .anchor .octicon-link,
+h2:hover .anchor .octicon-link,
+h3:hover .anchor .octicon-link,
+h4:hover .anchor .octicon-link,
+h5:hover .anchor .octicon-link,
+h6:hover .anchor .octicon-link {
+visibility: visible;
+}
+h1 {
+padding-bottom: 0.3em;
+font-size: 2.25em;
+line-height: 1.2;
+border-bottom: 1px solid #eee;
+}
+h1 .anchor {
+line-height: 1;
+}
+h2 {
+padding-bottom: 0.3em;
+font-size: 1.75em;
+line-height: 1.225;
+border-bottom: 1px solid #eee;
+}
+h2 .anchor {
+line-height: 1;
+}
+h3 {
+font-size: 1.5em;
+line-height: 1.43;
+}
+h3 .anchor {
+line-height: 1.2;
+}
+h4 {
+font-size: 1.25em;
+}
+h4 .anchor {
+line-height: 1.2;
+}
+h5 {
+font-size: 1em;
+}
+h5 .anchor {
+line-height: 1.1;
+}
+h6 {
+font-size: 1em;
+color: #777;
+}
+h6 .anchor {
+line-height: 1.1;
+}
+p,
+blockquote,
+ul,
+ol,
+dl,
+table,
+pre {
+margin-top: 0;
+margin-bottom: 16px;
+}
+hr {
+height: 4px;
+padding: 0;
+margin: 16px 0;
+background-color: #e7e7e7;
+border: 0 none;
+}
+ul,
+ol {
+padding-left: 2em;
+}
+ul ul,
+ul ol,
+ol ol,
+ol ul {
+margin-top: 0;
+margin-bottom: 0;
+}
+li>p {
+margin-top: 16px;
+}
+dl {
+padding: 0;
+}
+dl dt {
+padding: 0;
+margin-top: 16px;
+font-size: 1em;
+font-style: italic;
+font-weight: bold;
+}
+dl dd {
+padding: 0 16px;
+margin-bottom: 16px;
+}
+blockquote {
+padding: 0 15px;
+color: #777;
+border-left: 4px solid #ddd;
+}
+blockquote>:first-child {
+margin-top: 0;
+}
+blockquote>:last-child {
+margin-bottom: 0;
+}
+table {
+display: block;
+width: 100%;
+overflow: auto;
+word-break: normal;
+word-break: keep-all;
+}
+table th {
+font-weight: bold;
+}
+table th,
+table td {
+padding: 6px 13px;
+border: 1px solid #ddd;
+}
+table tr {
+background-color: #fff;
+border-top: 1px solid #ccc;
+}
+table tr:nth-child(2n) {
+background-color: #f8f8f8;
+}
+img {
+max-width: 100%;
+box-sizing: content-box;
+background-color: #fff;
+}
+code {
+padding: 0;
+padding-top: 0.2em;
+padding-bottom: 0.2em;
+margin: 0;
+font-size: 85%;
+background-color: rgba(0,0,0,0.04);
+border-radius: 3px;
+}
+code:before,
+code:after {
+letter-spacing: -0.2em;
+content: "\00a0";
+}
+pre>code {
+padding: 0;
+margin: 0;
+font-size: 100%;
+word-break: normal;
+white-space: pre;
+background: transparent;
+border: 0;
+}
+.highlight {
+margin-bottom: 16px;
+}
+.highlight pre,
+pre {
+padding: 16px;
+overflow: auto;
+font-size: 85%;
+line-height: 1.45;
+background-color: #f7f7f7;
+border-radius: 3px;
+}
+.highlight pre {
+margin-bottom: 0;
+word-break: normal;
+}
+pre {
+word-wrap: normal;
+}
+pre code {
+display: inline;
+max-width: initial;
+padding: 0;
+margin: 0;
+overflow: initial;
+line-height: inherit;
+word-wrap: normal;
+background-color: transparent;
+border: 0;
+}
+pre code:before,
+pre code:after {
+content: normal;
+}
+kbd {
+display: inline-block;
+padding: 3px 5px;
+font-size: 11px;
+line-height: 10px;
+color: #555;
+vertical-align: middle;
+background-color: #fcfcfc;
+border: solid 1px #ccc;
+border-bottom-color: #bbb;
+border-radius: 3px;
+box-shadow: inset 0 -1px 0 #bbb;
+}
+.pl-c {
+color: #969896;
+}
+.pl-c1,
+.pl-s .pl-v {
+color: #0086b3;
+}
+.pl-e,
+.pl-en {
+color: #795da3;
+}
+.pl-s .pl-s1,
+.pl-smi {
+color: #333;
+}
+.pl-ent {
+color: #63a35c;
+}
+.pl-k {
+color: #a71d5d;
+}
+.pl-pds,
+.pl-s,
+.pl-s .pl-pse .pl-s1,
+.pl-sr,
+.pl-sr .pl-cce,
+.pl-sr .pl-sra,
+.pl-sr .pl-sre {
+color: #183691;
+}
+.pl-v {
+color: #ed6a43;
+}
+.pl-id {
+color: #b52a1d;
+}
+.pl-ii {
+background-color: #b52a1d;
+color: #f8f8f8;
+}
+.pl-sr .pl-cce {
+color: #63a35c;
+font-weight: bold;
+}
+.pl-ml {
+color: #693a17;
+}
+.pl-mh,
+.pl-mh .pl-en,
+.pl-ms {
+color: #1d3e81;
+font-weight: bold;
+}
+.pl-mq {
+color: #008080;
+}
+.pl-mi {
+color: #333;
+font-style: italic;
+}
+.pl-mb {
+color: #333;
+font-weight: bold;
+}
+.pl-md {
+background-color: #ffecec;
+color: #bd2c00;
+}
+.pl-mi1 {
+background-color: #eaffea;
+color: #55a532;
+}
+.pl-mdr {
+color: #795da3;
+font-weight: bold;
+}
+.pl-mo {
+color: #1d3e81;
+}
+kbd {
+display: inline-block;
+padding: 3px 5px;
+font: 11px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+line-height: 10px;
+color: #555;
+vertical-align: middle;
+background-color: #fcfcfc;
+border: solid 1px #ccc;
+border-bottom-color: #bbb;
+border-radius: 3px;
+box-shadow: inset 0 -1px 0 #bbb;
+}
+.task-list-item {
+list-style-type: none;
+}
+.task-list-item+.task-list-item {
+margin-top: 3px;
+}
+.task-list-item input {
+margin: 0 0.35em 0.25em -1.6em;
+vertical-align: middle;
+}
+:checked+.radio-label {
+z-index: 1;
+position: relative;
+border-color: #4078c0;
+}
+.sourceLine {
+display: inline-block;
+}
+code .kw { color: #000000; }
+code .dt { color: #ed6a43; }
+code .dv { color: #009999; }
+code .bn { color: #009999; }
+code .fl { color: #009999; }
+code .ch { color: #009999; }
+code .st { color: #183691; }
+code .co { color: #969896; }
+code .ot { color: #0086b3; }
+code .al { color: #a61717; }
+code .fu { color: #63a35c; }
+code .er { color: #a61717; background-color: #e3d2d2; }
+code .wa { color: #000000; }
+code .cn { color: #008080; }
+code .sc { color: #008080; }
+code .vs { color: #183691; }
+code .ss { color: #183691; }
+code .im { color: #000000; }
+code .va {color: #008080; }
+code .cf { color: #000000; }
+code .op { color: #000000; }
+code .bu { color: #000000; }
+code .ex { color: #000000; }
+code .pp { color: #999999; }
+code .at { color: #008080; }
+code .do { color: #969896; }
+code .an { color: #008080; }
+code .cv { color: #008080; }
+code .in { color: #008080; }
+</style>
+<style>
+body {
+box-sizing: border-box;
+min-width: 200px;
+max-width: 980px;
+margin: 0 auto;
+padding: 45px;
+padding-top: 0px;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+<h1 id="hansardr">hansardR</h1>
+<!-- badges: start -->
+
+<p><a href="https://github.com/Australian-Parliamentary-Speech/hansardR/actions/workflows/R-CMD-check.yaml"><img role="img" aria-label="R-CMD-check" src="data:image/svg+xml; charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxODIiIGhlaWdodD0iMjAiPgogIDx0aXRsZT5SLUNNRC1jaGVjay55YW1sIC0gcGFzc2luZzwvdGl0bGU+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9IndvcmtmbG93LWZpbGwiIHgxPSI1MCUiIHkxPSIwJSIgeDI9IjUwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBzdG9wLWNvbG9yPSIjNDQ0RDU2IiBvZmZzZXQ9IjAlIj48L3N0b3A+CiAgICAgIDxzdG9wIHN0b3AtY29sb3I9IiMyNDI5MkUiIG9mZnNldD0iMTAwJSI+PC9zdG9wPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0ic3RhdGUtZmlsbCIgeDE9IjUwJSIgeTE9IjAlIiB4Mj0iNTAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIHN0b3AtY29sb3I9IiMzNEQwNTgiIG9mZnNldD0iMCUiPjwvc3RvcD4KICAgICAgPHN0b3Agc3RvcC1jb2xvcj0iIzI4QTc0NSIgb2Zmc2V0PSIxMDAlIj48L3N0b3A+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgPGcgZm9udC1mYW1pbHk9IiYjMzk7RGVqYVZ1IFNhbnMmIzM5OyxWZXJkYW5hLEdlbmV2YSxzYW5zLXNlcmlmIiBmb250LXNpemU9IjExIj4KICAgICAgPHBhdGggaWQ9IndvcmtmbG93LWJnIiBkPSJNMCwzIEMwLDEuMzQzMSAxLjM1NTIsMCAzLjAyNzAyNzAzLDAgTDEzMiwwIEwxMzIsMjAgTDMuMDI3MDI3MDMsMjAgQzEuMzU1MiwyMCAwLDE4LjY1NjkgMCwxNyBMMCwzIFoiIGZpbGw9InVybCgjd29ya2Zsb3ctZmlsbCkiIGZpbGwtcnVsZT0ibm9uemVybyI+PC9wYXRoPgogICAgICA8dGV4dCBmaWxsPSIjMDEwMTAxIiBmaWxsLW9wYWNpdHk9Ii4zIj4KICAgICAgICA8dHNwYW4geD0iMjIuMTk4MTk4MiIgeT0iMTUiIGFyaWEtaGlkZGVuPSJ0cnVlIj5SLUNNRC1jaGVjay55YW1sPC90c3Bhbj4KICAgICAgPC90ZXh0PgogICAgICA8dGV4dCBmaWxsPSIjRkZGRkZGIj4KICAgICAgICA8dHNwYW4geD0iMjIuMTk4MTk4MiIgeT0iMTQiPlItQ01ELWNoZWNrLnlhbWw8L3RzcGFuPgogICAgICA8L3RleHQ+CiAgICA8L2c+CiAgICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMzIpIiBmb250LWZhbWlseT0iJiMzOTtEZWphVnUgU2FucyYjMzk7LFZlcmRhbmEsR2VuZXZhLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTEiPgogICAgICA8cGF0aCBkPSJNMCAwaDQ2LjkzOUM0OC42MjkgMCA1MCAxLjM0MyA1MCAzdjE0YzAgMS42NTctMS4zNyAzLTMuMDYxIDNIMFYweiIgaWQ9InN0YXRlLWJnIiBmaWxsPSJ1cmwoI3N0YXRlLWZpbGwpIiBmaWxsLXJ1bGU9Im5vbnplcm8iPjwvcGF0aD4KICAgICAgPHRleHQgZmlsbD0iIzAxMDEwMSIgZmlsbC1vcGFjaXR5PSIuMyIgYXJpYS1oaWRkZW49InRydWUiPgogICAgICAgIDx0c3BhbiB4PSI0IiB5PSIxNSI+cGFzc2luZzwvdHNwYW4+CiAgICAgIDwvdGV4dD4KICAgICAgPHRleHQgZmlsbD0iI0ZGRkZGRiI+CiAgICAgICAgPHRzcGFuIHg9IjQiIHk9IjE0Ij5wYXNzaW5nPC90c3Bhbj4KICAgICAgPC90ZXh0PgogICAgPC9nPgogICAgPHBhdGggZmlsbD0iIzk1OURBNSIgZD0iTTExIDNjLTMuODY4IDAtNyAzLjEzMi03IDdhNi45OTYgNi45OTYgMCAwIDAgNC43ODYgNi42NDFjLjM1LjA2Mi40ODItLjE0OC40ODItLjMzMiAwLS4xNjYtLjAxLS43MTgtLjAxLTEuMzA0LTEuNzU4LjMyNC0yLjIxMy0uNDI5LTIuMzUzLS44MjItLjA3OS0uMjAyLS40Mi0uODIzLS43MTctLjk5LS4yNDUtLjEzLS41OTUtLjQ1NC0uMDEtLjQ2My41NTItLjAwOS45NDYuNTA4IDEuMDc3LjcxOC42MyAxLjA1OCAxLjYzNi43NiAyLjAzOS41NzcuMDYxLS40NTUuMjQ1LS43NjEuNDQ2LS45MzYtMS41NTctLjE3NS0zLjE4NS0uNzc5LTMuMTg1LTMuNDU2IDAtLjc2Mi4yNzEtMS4zOTIuNzE4LTEuODgyLS4wNy0uMTc1LS4zMTUtLjg5Mi4wNy0xLjg1NSAwIDAgLjU4Ni0uMTgzIDEuOTI1LjcxOGE2LjUgNi41IDAgMCAxIDEuNzUtLjIzNiA2LjUgNi41IDAgMCAxIDEuNzUuMjM2YzEuMzM4LS45MSAxLjkyNS0uNzE4IDEuOTI1LS43MTguMzg1Ljk2My4xNCAxLjY4LjA3IDEuODU1LjQ0Ni40OS43MTcgMS4xMTIuNzE3IDEuODgyIDAgMi42ODYtMS42MzYgMy4yOC0zLjE5NCAzLjQ1Ni4yNTQuMjE5LjQ3My42MzkuNDczIDEuMjk1IDAgLjkzNi0uMDA5IDEuNjg5LS4wMDkgMS45MjUgMCAuMTg0LjEzMS40MDIuNDgxLjMzMkE3LjAxMSA3LjAxMSAwIDAgMCAxOCAxMGMwLTMuODY3LTMuMTMzLTctNy03eiI+PC9wYXRoPgogIDwvZz4KPC9zdmc+Cgo=" alt="R-CMD-check" /></a> <a href="https://app.codecov.io/gh/Australian-Parliamentary-Speech/hansardR?branch=main"><img role="img" aria-label="Codecov test coverage" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMzciIGhlaWdodD0iMjAiPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiIiB4Mj0iMCIgeTI9IjEwMCUiPgogICAgICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2JiYiIgc3RvcC1vcGFjaXR5PSIuMSIgLz4KICAgICAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3Atb3BhY2l0eT0iLjEiIC8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPG1hc2sgaWQ9ImEiPgogICAgICAgIDxyZWN0IHdpZHRoPSIxMzciIGhlaWdodD0iMjAiIHJ4PSIzIiBmaWxsPSIjZmZmIiAvPgogICAgPC9tYXNrPgogICAgPGcgbWFzaz0idXJsKCNhKSI+CiAgICAgICAgPHBhdGggZmlsbD0iIzU1NSIgZD0iTTAgMGg3NnYyMEgweiIgLz4KICAgICAgICA8cGF0aCBmaWxsPSIjOWY5ZjlmIiBkPSJNNzYgMGg2MXYyMEg3NnoiIC8+CiAgICAgICAgPHBhdGggZmlsbD0idXJsKCNiKSIgZD0iTTAgMGgxMzd2MjBIMHoiIC8+CiAgICA8L2c+CiAgICA8ZyBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iRGVqYVZ1IFNhbnMsVmVyZGFuYSxHZW5ldmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMSI+CiAgICAgICAgPHRleHQgeD0iNDYiIHk9IjE1IiBmaWxsPSIjMDEwMTAxIiBmaWxsLW9wYWNpdHk9Ii4zIj5jb2RlY292PC90ZXh0PgogICAgICAgIDx0ZXh0IHg9IjQ2IiB5PSIxNCI+Y29kZWNvdjwvdGV4dD4KICAgICAgICA8dGV4dCB4PSIxMDUuNSIgeT0iMTUiIGZpbGw9IiMwMTAxMDEiIGZpbGwtb3BhY2l0eT0iLjMiPnVua25vd248L3RleHQ+CiAgICAgICAgPHRleHQgeD0iMTA1LjUiIHk9IjE0Ij51bmtub3duPC90ZXh0PgogICAgPC9nPgogICAgPHN2ZyB2aWV3Qm94PSIxNjEgLTggNjAgNjAiPgogICAgICAgIDxwYXRoIGQ9Ik0yMy4wMTMgMEMxMC4zMzMuMDA5LjAxIDEwLjIyIDAgMjIuNzYydi4wNThsMy45MTQgMi4yNzUuMDUzLS4wMzZhMTEuMjkxIDExLjI5MSAwIDAgMSA4LjM1Mi0xLjc2NyAxMC45MTEgMTAuOTExIDAgMCAxIDUuNSAyLjcyNmwuNjczLjYyNC4zOC0uODI4Yy4zNjgtLjgwMi43OTMtMS41NTYgMS4yNjQtMi4yNC4xOS0uMjc2LjM5OC0uNTU0LjYzNy0uODUxbC4zOTMtLjQ5LS40ODQtLjQwNGExNi4wOCAxNi4wOCAwIDAgMC03LjQ1My0zLjQ2NiAxNi40ODIgMTYuNDgyIDAgMCAwLTcuNzA1LjQ0OUM3LjM4NiAxMC42ODMgMTQuNTYgNS4wMTYgMjMuMDMgNS4wMWM0Ljc3OSAwIDkuMjcyIDEuODQgMTIuNjUxIDUuMTggMi40MSAyLjM4MiA0LjA2OSA1LjM1IDQuODA3IDguNTkxYTE2LjUzIDE2LjUzIDAgMCAwLTQuNzkyLS43MjNsLS4yOTItLjAwMmExNi43MDcgMTYuNzA3IDAgMCAwLTEuOTAyLjE0bC0uMDguMDEyYy0uMjguMDM3LS41MjQuMDc0LS43NDguMTE1LS4xMS4wMTktLjIxOC4wNDEtLjMyNy4wNjMtLjI1Ny4wNTItLjUxLjEwOC0uNzUuMTY5bC0uMjY1LjA2N2ExNi4zOSAxNi4zOSAwIDAgMC0uOTI2LjI3NmwtLjA1Ni4wMThjLS42ODIuMjMtMS4zNi41MTEtMi4wMTYuODM4bC0uMDUyLjAyNmMtLjI5LjE0NS0uNTg0LjMwNS0uODk5LjQ5bC0uMDY5LjA0YTE1LjU5NiAxNS41OTYgMCAwIDAtNC4wNjEgMy40NjZsLS4xNDUuMTc1Yy0uMjkuMzYtLjUyMS42NjYtLjcyMy45Ni0uMTcuMjQ3LS4zNC41MTMtLjU1Mi44NjRsLS4xMTYuMTk5Yy0uMTcuMjkyLS4zMi41Ny0uNDQ5LjgyNGwtLjAzLjA1N2ExNi4xMTYgMTYuMTE2IDAgMCAwLS44NDMgMi4wMjlsLS4wMzQuMTAyYTE1LjY1IDE1LjY1IDAgMCAwLS43ODYgNS4xNzRsLjAwMy4yMTRhMjEuNTIzIDIxLjUyMyAwIDAgMCAuMDQuNzU0Yy4wMDkuMTE5LjAyLjIzNy4wMzIuMzU1LjAxNC4xNDUuMDMyLjI5LjA0OS40MzJsLjAxLjA4Yy4wMS4wNjcuMDE3LjEzMy4wMjYuMTk3LjAzNC4yNDIuMDc0LjQ4LjExOS43Mi40NjMgMi40MTkgMS42MiA0LjgzNiAzLjM0NSA2Ljk5bC4wNzguMDk4LjA4LS4wOTVjLjY4OC0uODEgMi4zOTUtMy4zOCAyLjUzOS00LjkyMmwuMDAzLS4wMjktLjAxNC0uMDI1YTEwLjcyNyAxMC43MjcgMCAwIDEtMS4yMjYtNC45NTZjMC01Ljc2IDQuNTQ1LTEwLjU0NCAxMC4zNDMtMTAuODlsLjM4MS0uMDE0YTExLjQwMyAxMS40MDMgMCAwIDEgNi42NTEgMS45NTdsLjA1NC4wMzYgMy44NjItMi4yMzcuMDUtLjAzdi0uMDU2Yy4wMDYtNi4wOC0yLjM4NC0xMS43OTMtNi43MjktMTYuMDg5QzM0LjkzMiAyLjM2MSAyOS4xNiAwIDIzLjAxMyAwIiBmaWxsPSIjRjAxRjdBIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz4KICAgIDwvc3ZnPgo8L3N2Zz4K" alt="Codecov test coverage" /></a> <a href="https://CRAN.R-project.org/package=hansardR"><img role="img" aria-label="CRAN status" src="data:image/svg+xml; charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMzEiIGhlaWdodD0iMjAiIGFyaWEtbGFiZWw9IkNSQU4gbm90IHB1Ymxpc2hlZCI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJiIiB4Mj0iMCIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjYmJiIiBzdG9wLW9wYWNpdHk9Ii4xIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEiIHN0b3Atb3BhY2l0eT0iLjEiLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxtYXNrIGlkPSJhIj4KICAgIDxyZWN0IHdpZHRoPSIxMzEiIGhlaWdodD0iMjAiIHJ4PSIzIiBmaWxsPSIjZmZmIi8+CiAgPC9tYXNrPgogIDxnIG1hc2s9InVybCgjYSkiPgogICAgPHBhdGggZmlsbD0iIzU1NSIgZD0iTTAgMGg0M3YyMEgweiIvPgogICAgPHBhdGggZmlsbD0iI2UwNWQ0NCIgZD0iTTQzIDBoMTE0djIwSDQzeiIvPgogICAgPHBhdGggZmlsbD0idXJsKCNiKSIgZD0iTTAgMGgxMzF2MjBIMHoiLz4KICA8L2c+CiAgPGcgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSIKICAgICBmb250LWZhbWlseT0iRGVqYVZ1IFNhbnMsVmVyZGFuYSxHZW5ldmEsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMSI+CiAgICA8dGV4dCB4PSIyMS41IiB5PSIxNSIgZmlsbD0iIzAxMDEwMSIgZmlsbC1vcGFjaXR5PSIuMyI+CiAgICAgIENSQU4KICAgIDwvdGV4dD4KICAgIDx0ZXh0IHg9IjIxLjUiIHk9IjE0Ij4KICAgICAgQ1JBTgogICAgPC90ZXh0PgogICAgPHRleHQgeD0iODYiIHk9IjE1IiBmaWxsPSIjMDEwMTAxIiBmaWxsLW9wYWNpdHk9Ii4zIj4KICAgICAgbm90IHB1Ymxpc2hlZAogICAgPC90ZXh0PgogICAgPHRleHQgeD0iODYiIHk9IjE0Ij4KICAgICAgbm90IHB1Ymxpc2hlZAogICAgPC90ZXh0PgogIDwvZz4KPC9zdmc+" alt="CRAN status" /></a> <a href="https://lifecycle.r-lib.org/articles/stages.html#experimental"><img role="img" aria-label="Lifecycle: experimental" src="data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMzgiIGhlaWdodD0iMjAiIHJvbGU9ImltZyIgYXJpYS1sYWJlbD0ibGlmZWN5Y2xlOiBleHBlcmltZW50YWwiPjx0aXRsZT5saWZlY3ljbGU6IGV4cGVyaW1lbnRhbDwvdGl0bGU+PGxpbmVhckdyYWRpZW50IGlkPSJzIiB4Mj0iMCIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2JiYiIgc3RvcC1vcGFjaXR5PSIuMSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1vcGFjaXR5PSIuMSIvPjwvbGluZWFyR3JhZGllbnQ+PGNsaXBQYXRoIGlkPSJyIj48cmVjdCB3aWR0aD0iMTM4IiBoZWlnaHQ9IjIwIiByeD0iMyIgZmlsbD0iI2ZmZiIvPjwvY2xpcFBhdGg+PGcgY2xpcC1wYXRoPSJ1cmwoI3IpIj48cmVjdCB3aWR0aD0iNTUiIGhlaWdodD0iMjAiIGZpbGw9IiM1NTUiLz48cmVjdCB4PSI1NSIgd2lkdGg9IjgzIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmU3ZDM3Ii8+PHJlY3Qgd2lkdGg9IjEzOCIgaGVpZ2h0PSIyMCIgZmlsbD0idXJsKCNzKSIvPjwvZz48ZyBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iVmVyZGFuYSxHZW5ldmEsRGVqYVZ1IFNhbnMsc2Fucy1zZXJpZiIgdGV4dC1yZW5kZXJpbmc9Imdlb21ldHJpY1ByZWNpc2lvbiIgZm9udC1zaXplPSIxMTAiPjx0ZXh0IGFyaWEtaGlkZGVuPSJ0cnVlIiB4PSIyODUiIHk9IjE1MCIgZmlsbD0iIzAxMDEwMSIgZmlsbC1vcGFjaXR5PSIuMyIgdHJhbnNmb3JtPSJzY2FsZSguMSkiIHRleHRMZW5ndGg9IjQ1MCI+bGlmZWN5Y2xlPC90ZXh0Pjx0ZXh0IHg9IjI4NSIgeT0iMTQwIiB0cmFuc2Zvcm09InNjYWxlKC4xKSIgZmlsbD0iI2ZmZiIgdGV4dExlbmd0aD0iNDUwIj5saWZlY3ljbGU8L3RleHQ+PHRleHQgYXJpYS1oaWRkZW49InRydWUiIHg9Ijk1NSIgeT0iMTUwIiBmaWxsPSIjMDEwMTAxIiBmaWxsLW9wYWNpdHk9Ii4zIiB0cmFuc2Zvcm09InNjYWxlKC4xKSIgdGV4dExlbmd0aD0iNzMwIj5leHBlcmltZW50YWw8L3RleHQ+PHRleHQgeD0iOTU1IiB5PSIxNDAiIHRyYW5zZm9ybT0ic2NhbGUoLjEpIiBmaWxsPSIjZmZmIiB0ZXh0TGVuZ3RoPSI3MzAiPmV4cGVyaW1lbnRhbDwvdGV4dD48L2c+PC9zdmc+" alt="Lifecycle: experimental" /></a></p>
+<!-- badges: end -->
+
+<p>A comprehensive R toolkit for processing, validating, and analysing
+Australian Parliamentary Hansard CSV data. Designed for computational
+social science research with robust data handling, validation, and
+structured database storage.</p>
+<h2 id="features">Features</h2>
+<ul>
+<li>🗃️ <strong>Database Creation</strong>: Structured SQLite storage
+with optimised indexes and triggers</li>
+<li>✅ <strong>File Validation</strong>: Comprehensive CSV structure and
+integrity checking</li>
+<li>📊 <strong>Batch Processing</strong>: Efficient import of large
+datasets with progress tracking</li>
+<li>🔍 <strong>Advanced Querying</strong>: dplyr-compatible database
+interface for analysis</li>
+<li>🔎 <strong>Full-Text Search</strong>: SQLite FTS5 powered content
+search with highlighting</li>
+<li>📈 <strong>Built-in Analytics</strong>: Speaker statistics, temporal
+analysis, and content metrics</li>
+<li>⚡ <strong>Performance Optimized</strong>: Strategic indexing and
+database triggers for speed</li>
+<li>🛠️ <strong>Modular Design</strong>: Separate validation, processing,
+and analysis workflows</li>
+<li>📚 <strong>Rich Documentation</strong>: Comprehensive vignettes and
+examples</li>
+</ul>
+<h2 id="installation">Installation</h2>
+<h3 id="development-version-recommended">Development Version
+(Recommended)</h3>
+<p>Install the latest development version from GitHub:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">&quot;Australian-Parliamentary-Speech/hansardR&quot;</span>)</span></code></pre></div>
+<h3 id="system-requirements">System Requirements</h3>
+<p><strong>R Version</strong>: Requires R ≥ 4.1.0 (for native pipe
+operator <code>|&gt;</code>)</p>
+<p><strong>Dependencies</strong>: The package will automatically install
+required dependencies: - <code>DBI</code>, <code>RSQLite</code> -
+Database interface - <code>dplyr</code>, <code>readr</code>,
+<code>purrr</code>, <code>stringr</code>, <code>tibble</code> - Data
+manipulation - <code>progress</code> (optional) - Progress bars for
+batch operations</p>
+<h2 id="quick-start">Quick Start</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(hansardR)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co"># Create database</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="fu">create_hansard_database</span>(<span class="st">&quot;hansard.db&quot;</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co"># Import single file</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="fu">import_hansard_file</span>(<span class="st">&quot;2025-02-04_edit_step7.csv&quot;</span>, con)</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co"># Get table references for analysis</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>tbls <span class="ot">&lt;-</span> <span class="fu">get_hansard_tables</span>(con)</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co"># Analyse with dplyr</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>top_speakers <span class="ot">&lt;-</span> tbls<span class="sc">$</span>speeches <span class="sc">|&gt;</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  <span class="fu">left_join</span>(tbls<span class="sc">$</span>members, <span class="at">by =</span> <span class="st">&quot;member_id&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>  <span class="fu">count</span>(full_name, party, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>  <span class="fu">collect</span>()</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="fu">print</span>(top_speakers)</span></code></pre></div>
+<h2 id="sample-data">Sample Data</h2>
+<p>The package includes sample data for testing and learning:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Explore included sample data</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">hansard_sample_info</span>()</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co"># Use sample data in examples</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>sample_path <span class="ot">&lt;-</span> <span class="fu">hansard_sample_data</span>()</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="fu">create_hansard_database</span>(<span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">&quot;.db&quot;</span>))</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="fu">import_hansard_year</span>(<span class="fu">file.path</span>(sample_path, <span class="st">&quot;sample_2025&quot;</span>), con)</span></code></pre></div>
+<h2 id="comprehensive-workflow">Comprehensive Workflow</h2>
+<p>For detailed usage instructions, see the complete workflow
+vignette:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># View the comprehensive workflow guide</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">vignette</span>(<span class="st">&quot;hansard-workflow&quot;</span>, <span class="at">package =</span> <span class="st">&quot;hansardR&quot;</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># Or browse online</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="fu">browseVignettes</span>(<span class="st">&quot;hansardR&quot;</span>)</span></code></pre></div>
+<h2 id="key-functions">Key Functions</h2>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>create_hansard_database()</code></td>
+<td>Create structured SQLite database with optimizations</td>
+</tr>
+<tr>
+<td><code>optimize_hansard_database()</code></td>
+<td>Apply performance optimizations to existing database</td>
+</tr>
+<tr>
+<td><code>validate_csv_structure()</code></td>
+<td>Check file integrity before processing</td>
+</tr>
+<tr>
+<td><code>import_hansard_file()</code></td>
+<td>Import single CSV file</td>
+</tr>
+<tr>
+<td><code>import_hansard_batch()</code></td>
+<td>Import multiple files with progress tracking</td>
+</tr>
+<tr>
+<td><code>import_hansard_year()</code></td>
+<td>Import all files from a year directory</td>
+</tr>
+<tr>
+<td><code>get_hansard_tables()</code></td>
+<td>Get dplyr table references for analysis</td>
+</tr>
+<tr>
+<td><code>get_top_speakers()</code></td>
+<td>Built-in speaker activity analysis</td>
+</tr>
+<tr>
+<td><code>search_speech_content()</code></td>
+<td>Full-text search of speech content with highlighting</td>
+</tr>
+<tr>
+<td><code>search_speeches_advanced()</code></td>
+<td>Advanced search combining content and metadata filters</td>
+</tr>
+<tr>
+<td><code>get_content_statistics()</code></td>
+<td>Content analysis and search capability statistics</td>
+</tr>
+</tbody>
+</table>
+<h2 id="data-structure">Data Structure</h2>
+<p>The package creates a normalised database schema:</p>
+<ul>
+<li><strong>sessions</strong>: Parliamentary sitting days</li>
+<li><strong>members</strong>: MPs with party affiliations and
+electorates</li>
+<li><strong>debates</strong>: Major topics discussed in each
+session</li>
+<li><strong>speeches</strong>: Individual contributions, questions,
+answers, and interjections</li>
+</ul>
+<h3 id="database-schema">Database Schema</h3>
+<p>The package creates a normalised relational database optimised for
+parliamentary data analysis:</p>
+<pre class="mermaid"><code>erDiagram
+    SESSIONS {
+        int session_id PK
+        date session_date UK
+        int year &quot;Generated&quot;
+        int chamber_type
+        text source_file
+        text file_hash
+        datetime created_at
+    }
+    
+    MEMBERS {
+        int member_id PK
+        text name_id UK
+        text full_name
+        text electorate
+        text party
+        text role
+        text status &quot;active/inactive/unknown&quot;
+        date first_seen_date
+        date last_seen_date
+        date first_parliament_date
+        date last_parliament_date
+        datetime created_at
+    }
+    
+    DEBATES {
+        int debate_id PK
+        int session_id FK
+        int parent_debate_id FK &quot;Self-reference&quot;
+        text debate_title
+        int debate_order
+        int debate_level &quot;Hierarchy level&quot;
+        datetime created_at
+    }
+    
+    SPEECHES {
+        int speech_id PK
+        int session_id FK
+        int debate_id FK
+        int member_id FK
+        int speaker_no
+        time speech_time
+        real page_no
+        text content
+        text subdebate_info
+        text xml_path
+        bool is_question
+        bool is_answer
+        bool is_interjection
+        bool is_speech
+        bool is_stage_direction
+        int content_length &quot;Generated&quot;
+        datetime created_at
+    }
+    
+    SPEECHES_FTS {
+        int rowid FK &quot;Links to speech_id&quot;
+        text content &quot;Full-text indexed&quot;
+    }
+
+    SESSIONS ||--o{ DEBATES : &quot;has&quot;
+    SESSIONS ||--o{ SPEECHES : &quot;contains&quot;
+    MEMBERS ||--o{ SPEECHES : &quot;gives&quot;
+    DEBATES ||--o{ SPEECHES : &quot;includes&quot;
+    DEBATES ||--o{ DEBATES : &quot;has_subdebates&quot;
+    SPEECHES ||--|| SPEECHES_FTS : &quot;indexed_by&quot;</code></pre>
+<h3 id="data-processing-workflow">Data processing workflow</h3>
+<pre class="mermaid"><code>flowchart TD
+
+    A[CSV Files&lt;br/&gt;2025-02-04_edit_step7.csv] --&gt; B{File Validation}
+    B --&gt;|Valid| C[Load &amp; Clean Data]
+    B --&gt;|Invalid| D[Report Issues]
+    
+    C --&gt; E[Extract Session Info&lt;br/&gt;Date, Chamber, Source]
+    C --&gt; F[Extract Members&lt;br/&gt;Name, Party, Electorate]
+    C --&gt; G[Extract Debates&lt;br/&gt;Topics, Order]
+    C --&gt; H[Extract Speeches&lt;br/&gt;Content, Flags, Metadata]
+    
+    E --&gt; I[(Sessions Table)]
+    F --&gt; J[(Members Table)]
+    G --&gt; K[(Debates Table)]
+    H --&gt; L[(Speeches Table)]
+    
+    I --&gt; M[Analysis Ready Database]
+    J --&gt; M
+    K --&gt; M
+    L --&gt; M
+    
+    M --&gt; N[dplyr Queries]
+    M --&gt; O[SQL Queries]
+    M --&gt; P[Text Mining]
+    
+    N --&gt; Q[Speaker Statistics]
+    O --&gt; R[Temporal Analysis]
+    P --&gt; S[Content Analysis]
+    
+    style A fill:#e1f5fe
+    style M fill:#f3e5f5
+    style Q fill:#e8f5e8
+    style R fill:#e8f5e8
+    style S fill:#e8f5e8</code></pre>
+<h2 id="example-analyses">Example Analyses</h2>
+<h3 id="speaker-activity-analysis">Speaker Activity Analysis</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Most active speakers</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>top_speakers <span class="ot">&lt;-</span> <span class="fu">get_top_speakers</span>(con, <span class="at">limit =</span> <span class="dv">10</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co"># Questions by party over time</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>party_questions <span class="ot">&lt;-</span> tbls<span class="sc">$</span>speeches <span class="sc">|&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="fu">filter</span>(is_question <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  <span class="fu">left_join</span>(tbls<span class="sc">$</span>members, <span class="at">by =</span> <span class="st">&quot;member_id&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="fu">left_join</span>(tbls<span class="sc">$</span>sessions, <span class="at">by =</span> <span class="st">&quot;session_id&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>  <span class="fu">count</span>(party, year, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>  <span class="fu">collect</span>()</span></code></pre></div>
+<h3 id="content-analysis">Content Analysis</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Average speech length by party</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>speech_patterns <span class="ot">&lt;-</span> tbls<span class="sc">$</span>speeches <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="fu">left_join</span>(tbls<span class="sc">$</span>members, <span class="at">by =</span> <span class="st">&quot;member_id&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="fu">group_by</span>(party) <span class="sc">|&gt;</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>    <span class="at">avg_length =</span> <span class="fu">mean</span>(content_length, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>    <span class="at">total_speeches =</span> <span class="fu">n</span>(),</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>    <span class="at">questions =</span> <span class="fu">sum</span>(is_question, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>  <span class="fu">collect</span>()</span></code></pre></div>
+<h3 id="temporal-trends">Temporal Trends</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Parliamentary activity over time</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>monthly_activity <span class="ot">&lt;-</span> tbls<span class="sc">$</span>speeches <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="fu">left_join</span>(tbls<span class="sc">$</span>sessions, <span class="at">by =</span> <span class="st">&quot;session_id&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month =</span> <span class="fu">substr</span>(session_date, <span class="dv">1</span>, <span class="dv">7</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="fu">count</span>(month, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="fu">collect</span>()</span></code></pre></div>
+<h3 id="full-text-search">Full-Text Search</h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Search for climate change mentions</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>climate_speeches <span class="ot">&lt;-</span> <span class="fu">search_speech_content</span>(con, <span class="st">&quot;climate change&quot;</span>, <span class="at">limit =</span> <span class="dv">50</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co"># Advanced search: ALP members discussing renewable energy since 2024</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>renewable_search <span class="ot">&lt;-</span> <span class="fu">search_speeches_advanced</span>(</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>  con,</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>  <span class="at">content_query =</span> <span class="st">&quot;renewable energy&quot;</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>  <span class="at">party =</span> <span class="st">&quot;ALP&quot;</span>, </span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>  <span class="at">date_from =</span> <span class="st">&quot;2024-01-01&quot;</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>  <span class="at">limit =</span> <span class="dv">25</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>)</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co"># Get search statistics</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>search_stats <span class="ot">&lt;-</span> <span class="fu">get_content_statistics</span>(con)</span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="fu">print</span>(search_stats<span class="sc">$</span>basic)</span></code></pre></div>
+<h2 id="file-format">File Format</h2>
+<p>The package expects CSV files with Australian Parliamentary Hansard
+structure:</p>
+<ul>
+<li>Filename format: <code>YYYY-MM-DD_edit_step7.csv</code></li>
+<li>Required columns: <code>question_flag</code>,
+<code>answer_flag</code>, <code>speech_flag</code>, <code>name</code>,
+<code>name.id</code>, <code>party</code>, <code>content</code>,
+etc.</li>
+<li>Encoding: UTF-8</li>
+</ul>
+<h2 id="performance">Performance</h2>
+<p>Designed for large-scale parliamentary data with enterprise-level
+optimizations:</p>
+<ul>
+<li>✅ Handles 100+ years of parliamentary data (1901-2025)</li>
+<li>✅ Efficient batch processing with transaction management</li>
+<li>✅ Strategic database indexing with 15+ optimized indexes</li>
+<li>✅ Full-text search with SQLite FTS5 and BM25 ranking</li>
+<li>✅ Automatic database triggers for data validation and
+maintenance</li>
+<li>✅ Memory-efficient streaming for large files</li>
+<li>✅ Progress tracking for long-running operations</li>
+<li>✅ Database optimization functions for existing installations</li>
+</ul>
+<h2 id="contributing">Contributing</h2>
+<p>We welcome contributions! Please see our <a href="CONTRIBUTING.md">Contributing Guidelines</a> for details.</p>
+<h3 id="development-setup">Development Setup</h3>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Clone the repository</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>git clone https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>Australian<span class="sc">-</span>Parliamentary<span class="sc">-</span>Speech<span class="sc">/</span>hansardR.git</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>cd hansardR</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="co"># Install development dependencies</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_dev_deps</span>()</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co"># Run tests</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">test</span>()</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a><span class="co"># Check package</span></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">check</span>()</span></code></pre></div>
+<h2 id="citation">Citation</h2>
+<p>If you use hansardR in your research, please cite:</p>
+<pre><code>Benoit, Kenneth (2025). hansardR: Processing Australian Parliamentary Hansard Data. 
+R package version 0.1.0. https://github.com/Australian-Parliamentary-Speech/hansardR</code></pre>
+<h2 id="related-projects">Related Projects</h2>
+<ul>
+<li><a href="https://github.com/Australian-Parliamentary-Speech">Australian
+Parliamentary Speech Project</a> - Broader research initiative</li>
+<li><a href="https://dataverse.harvard.edu/dataverse/parlspeech">ParlSpeech</a>
+- Comparative parliamentary speech data</li>
+<li><a href="https://quanteda.io/">quanteda</a> - Text analysis
+framework</li>
+</ul>
+<h2 id="license">License</h2>
+<p>GPL (&gt;= 3) - see <a href="LICENSE">LICENSE</a> file for
+details.</p>
+<h2 id="support">Support</h2>
+<ul>
+<li>📖 <a href="https://australian-parliamentary-speech.github.io/hansardR/">Package
+Documentation</a></li>
+<li>🐛 <a href="https://github.com/Australian-Parliamentary-Speech/hansardR/issues">Report
+Issues</a></li>
+<li>💬 <a href="https://github.com/Australian-Parliamentary-Speech/hansardR/discussions">Discussions</a></li>
+<li>📧 Contact: <a href="mailto:kbenoit@smu.edu.sg">kbenoit@smu.edu.sg</a></li>
+</ul>
+<hr />
+<p><strong>Developed by the <a href="https://github.com/Australian-Parliamentary-Speech">Australian
+Parliamentary Speech Project</a></strong></p>
+
+</body>
+</html>
