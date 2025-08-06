@@ -135,17 +135,22 @@ The package creates a normalised database schema:
 - **speeches**: Individual contributions, questions, answers, and
   interjections
 
-### Database Schema
+## Database Schema
 
 The package creates a normalised relational database optimised for
 parliamentary data analysis:
 
-<div class="mermaid">
-
-erDiagram SESSIONS { int session_id PK date session_date UK int year
-“Generated” int chamber_type text source_file text file_hash datetime
-created_at }
-
+``` mermaid
+erDiagram
+    SESSIONS {
+        int session_id PK
+        date session_date UK
+        int year
+        int chamber_type
+        text source_file
+        datetime created_at
+    }
+    
     MEMBERS {
         int member_id PK
         text name_id UK
@@ -153,97 +158,44 @@ created_at }
         text electorate
         text party
         text role
-        text status "active/inactive/unknown"
         date first_seen_date
         date last_seen_date
-        date first_parliament_date
-        date last_parliament_date
         datetime created_at
-    }
-
-    DEBATES {
-        int debate_id PK
-        int session_id FK
-        int parent_debate_id FK "References debate_id for hierarchy"
-        text debate_title
-        int debate_order
-        int debate_level "Hierarchy level"
-        datetime created_at
-    }
-
-    SPEECHES {
-        int speech_id PK
-        int session_id FK
-        int debate_id FK
-        int member_id FK
-        int speaker_no
-        time speech_time
-        real page_no
-        text content
-        text subdebate_info
-        text xml_path
-        bool is_question
-        bool is_answer
-        bool is_interjection
-        bool is_speech
-        bool is_stage_direction
-        int content_length "Generated"
-        datetime created_at
-    }
-
-    SPEECHES_FTS {
-        int rowid FK "Links to speech_id"
-        text content "Full-text indexed"
     }
 
     SESSIONS ||--o{ DEBATES : "has"
     SESSIONS ||--o{ SPEECHES : "contains"
     MEMBERS ||--o{ SPEECHES : "gives"
     DEBATES ||--o{ SPEECHES : "includes"
-    SPEECHES ||--|| SPEECHES_FTS : "indexed_by"
+```
 
-</div>
+## Data Processing Workflow
 
-### Data processing workflow
-
-<div class="mermaid">
-
+``` mermaid
 flowchart TD
-
-    A[CSV Files<br/>2025-02-04_edit_step7.csv] --> B{File Validation}
+    A[CSV Files] --> B{File Validation}
     B -->|Valid| C[Load & Clean Data]
     B -->|Invalid| D[Report Issues]
-
-    C --> E[Extract Session Info<br/>Date, Chamber, Source]
-    C --> F[Extract Members<br/>Name, Party, Electorate]
-    C --> G[Extract Debates<br/>Topics, Order]
-    C --> H[Extract Speeches<br/>Content, Flags, Metadata]
-
+    
+    C --> E[Extract Session Info]
+    C --> F[Extract Members]
+    C --> G[Extract Debates]
+    C --> H[Extract Speeches]
+    
     E --> I[(Sessions Table)]
     F --> J[(Members Table)]
     G --> K[(Debates Table)]
     H --> L[(Speeches Table)]
-
+    
     I --> M[Analysis Ready Database]
     J --> M
     K --> M
     L --> M
-
+    
     M --> N[dplyr Queries]
     M --> O[SQL Queries]
     M --> P[Text Mining]
-
-    N --> Q[Speaker Statistics]
-    O --> R[Temporal Analysis]
-    P --> S[Content Analysis]
-
-    style A fill:#e1f5fe
-    style M fill:#f3e5f5
-    style Q fill:#e8f5e8
-    style R fill:#e8f5e8
-    style S fill:#e8f5e8
-
-</div>
+```
 
 ## Example Analyses
 
