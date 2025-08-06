@@ -3,7 +3,7 @@ pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   hansard-workflow: hansard-workflow.html
-last_built: 2025-08-06T02:30Z
+last_built: 2025-08-06T02:55Z
 urls:
   reference: https://australian-parliamentary-speech.github.io/hansardR/reference
   article: https://australian-parliamentary-speech.github.io/hansardR/articles

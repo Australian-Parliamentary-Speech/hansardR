@@ -225,108 +225,64 @@
 <li>
 <strong>speeches</strong>: Individual contributions, questions, answers, and interjections</li>
 </ul>
-<div class="section level3">
-<h3 id="database-schema">Database Schema<a class="anchor" aria-label="anchor" href="#database-schema"></a>
-</h3>
+</div>
+<div class="section level2">
+<h2 id="database-schema">Database Schema<a class="anchor" aria-label="anchor" href="#database-schema"></a>
+</h2>
 <p>The package creates a normalised relational database optimised for parliamentary data analysis:</p>
-<div class="mermaid">
-<p>erDiagram SESSIONS { int session_id PK date session_date UK int year “Generated” int chamber_type text source_file text file_hash datetime created_at }</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>MEMBERS {</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>    int member_id PK</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>    text name_id UK</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>    text full_name</span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>    text electorate</span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>    text party</span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>    text role</span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>    text status <span class="st">"active/inactive/unknown"</span></span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>    date first_seen_date</span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>    date last_seen_date</span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>    date first_parliament_date</span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>    date last_parliament_date</span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>    datetime created_at</span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>}</span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a></span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>DEBATES {</span>
-<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>    int debate_id PK</span>
-<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>    int session_id FK</span>
-<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>    int parent_debate_id FK <span class="st">"References debate_id for hierarchy"</span></span>
-<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>    text debate_title</span>
-<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>    int debate_order</span>
-<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>    int debate_level <span class="st">"Hierarchy level"</span></span>
-<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>    datetime created_at</span>
-<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>}</span>
-<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a></span>
-<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a>SPEECHES {</span>
-<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a>    int speech_id PK</span>
-<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a>    int session_id FK</span>
-<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a>    int debate_id FK</span>
-<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a>    int member_id FK</span>
-<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a>    int speaker_no</span>
-<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a>    time speech_time</span>
-<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a>    real page_no</span>
-<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a>    text content</span>
-<span id="cb5-35"><a href="#cb5-35" tabindex="-1"></a>    text subdebate_info</span>
-<span id="cb5-36"><a href="#cb5-36" tabindex="-1"></a>    text xml_path</span>
-<span id="cb5-37"><a href="#cb5-37" tabindex="-1"></a>    bool is_question</span>
-<span id="cb5-38"><a href="#cb5-38" tabindex="-1"></a>    bool is_answer</span>
-<span id="cb5-39"><a href="#cb5-39" tabindex="-1"></a>    bool is_interjection</span>
-<span id="cb5-40"><a href="#cb5-40" tabindex="-1"></a>    bool is_speech</span>
-<span id="cb5-41"><a href="#cb5-41" tabindex="-1"></a>    bool is_stage_direction</span>
-<span id="cb5-42"><a href="#cb5-42" tabindex="-1"></a>    int content_length <span class="st">"Generated"</span></span>
-<span id="cb5-43"><a href="#cb5-43" tabindex="-1"></a>    datetime created_at</span>
-<span id="cb5-44"><a href="#cb5-44" tabindex="-1"></a>}</span>
-<span id="cb5-45"><a href="#cb5-45" tabindex="-1"></a></span>
-<span id="cb5-46"><a href="#cb5-46" tabindex="-1"></a>SPEECHES_FTS {</span>
-<span id="cb5-47"><a href="#cb5-47" tabindex="-1"></a>    int rowid FK <span class="st">"Links to speech_id"</span></span>
-<span id="cb5-48"><a href="#cb5-48" tabindex="-1"></a>    text content <span class="st">"Full-text indexed"</span></span>
-<span id="cb5-49"><a href="#cb5-49" tabindex="-1"></a>}</span>
-<span id="cb5-50"><a href="#cb5-50" tabindex="-1"></a></span>
-<span id="cb5-51"><a href="#cb5-51" tabindex="-1"></a>SESSIONS <span class="sc">||--</span>o{ DEBATES <span class="sc">:</span> <span class="st">"has"</span></span>
-<span id="cb5-52"><a href="#cb5-52" tabindex="-1"></a>SESSIONS <span class="sc">||--</span>o{ SPEECHES <span class="sc">:</span> <span class="st">"contains"</span></span>
-<span id="cb5-53"><a href="#cb5-53" tabindex="-1"></a>MEMBERS <span class="sc">||--</span>o{ SPEECHES <span class="sc">:</span> <span class="st">"gives"</span></span>
-<span id="cb5-54"><a href="#cb5-54" tabindex="-1"></a>DEBATES <span class="sc">||--</span>o{ SPEECHES <span class="sc">:</span> <span class="st">"includes"</span></span>
-<span id="cb5-55"><a href="#cb5-55" tabindex="-1"></a>SPEECHES <span class="sc">||--</span><span class="er">||</span> SPEECHES_FTS <span class="sc">:</span> <span class="st">"indexed_by"</span></span></code></pre></div>
+<pre class="mermaid"><code>erDiagram
+    SESSIONS {
+        int session_id PK
+        date session_date UK
+        int year
+        int chamber_type
+        text source_file
+        datetime created_at
+    }
+
+    MEMBERS {
+        int member_id PK
+        text name_id UK
+        text full_name
+        text electorate
+        text party
+        text role
+        date first_seen_date
+        date last_seen_date
+        datetime created_at
+    }
+
+    SESSIONS ||--o{ DEBATES : "has"
+    SESSIONS ||--o{ SPEECHES : "contains"
+    MEMBERS ||--o{ SPEECHES : "gives"
+    DEBATES ||--o{ SPEECHES : "includes"</code></pre>
 </div>
-</div>
-<div class="section level3">
-<h3 id="data-processing-workflow">Data processing workflow<a class="anchor" aria-label="anchor" href="#data-processing-workflow"></a>
-</h3>
-<div class="mermaid">
-<p>flowchart TD</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>A[CSV Files<span class="sc">&lt;</span>br<span class="sc">/</span><span class="er">&gt;</span><span class="dv">2025-02-04</span>_edit_step7.csv] <span class="sc">-</span><span class="ot">-&gt;</span> B{File Validation}</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>B <span class="sc">-</span><span class="ot">-&gt;</span><span class="er">|</span>Valid<span class="sc">|</span> C[Load <span class="sc">&amp;</span> Clean Data]</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>B <span class="sc">-</span><span class="ot">-&gt;</span><span class="er">|</span>Invalid<span class="sc">|</span> D[Report Issues]</span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>C <span class="sc">-</span><span class="ot">-&gt;</span> E[Extract Session Info<span class="sc">&lt;</span>br<span class="sc">/</span><span class="er">&gt;</span>Date, Chamber, Source]</span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>C <span class="sc">-</span><span class="ot">-&gt;</span> F[Extract Members<span class="sc">&lt;</span>br<span class="sc">/</span><span class="er">&gt;</span>Name, Party, Electorate]</span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>C <span class="sc">-</span><span class="ot">-&gt;</span> G[Extract Debates<span class="sc">&lt;</span>br<span class="sc">/</span><span class="er">&gt;</span>Topics, Order]</span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>C <span class="sc">-</span><span class="ot">-&gt;</span> H[Extract Speeches<span class="sc">&lt;</span>br<span class="sc">/</span><span class="er">&gt;</span>Content, Flags, Metadata]</span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a></span>
-<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>E <span class="sc">-</span><span class="ot">-&gt;</span> I[(Sessions Table)]</span>
-<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>F <span class="sc">-</span><span class="ot">-&gt;</span> J[(Members Table)]</span>
-<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>G <span class="sc">-</span><span class="ot">-&gt;</span> K[(Debates Table)]</span>
-<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>H <span class="sc">-</span><span class="ot">-&gt;</span> L[(Speeches Table)]</span>
-<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>I <span class="sc">-</span><span class="ot">-&gt;</span> M[Analysis Ready Database]</span>
-<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>J <span class="sc">-</span><span class="ot">-&gt;</span> M</span>
-<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>K <span class="sc">-</span><span class="ot">-&gt;</span> M</span>
-<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>L <span class="sc">-</span><span class="ot">-&gt;</span> M</span>
-<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a></span>
-<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>M <span class="sc">-</span><span class="ot">-&gt;</span> N[dplyr Queries]</span>
-<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>M <span class="sc">-</span><span class="ot">-&gt;</span> O[SQL Queries]</span>
-<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a>M <span class="sc">-</span><span class="ot">-&gt;</span> P[Text Mining]</span>
-<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a></span>
-<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a>N <span class="sc">-</span><span class="ot">-&gt;</span> Q[Speaker Statistics]</span>
-<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>O <span class="sc">-</span><span class="ot">-&gt;</span> R[Temporal Analysis]</span>
-<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a>P <span class="sc">-</span><span class="ot">-&gt;</span> S[Content Analysis]</span>
-<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a></span>
-<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a>style A fill<span class="sc">:</span><span class="co">#e1f5fe</span></span>
-<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a>style M fill<span class="sc">:</span><span class="co">#f3e5f5</span></span>
-<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a>style Q fill<span class="sc">:</span><span class="co">#e8f5e8</span></span>
-<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a>style R fill<span class="sc">:</span><span class="co">#e8f5e8</span></span>
-<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a>style S fill<span class="sc">:</span><span class="co">#e8f5e8</span></span></code></pre></div>
-</div>
-</div>
+<div class="section level2">
+<h2 id="data-processing-workflow">Data Processing Workflow<a class="anchor" aria-label="anchor" href="#data-processing-workflow"></a>
+</h2>
+<pre class="mermaid"><code>flowchart TD
+    A[CSV Files] --&gt; B{File Validation}
+    B --&gt;|Valid| C[Load &amp; Clean Data]
+    B --&gt;|Invalid| D[Report Issues]
+
+    C --&gt; E[Extract Session Info]
+    C --&gt; F[Extract Members]
+    C --&gt; G[Extract Debates]
+    C --&gt; H[Extract Speeches]
+
+    E --&gt; I[(Sessions Table)]
+    F --&gt; J[(Members Table)]
+    G --&gt; K[(Debates Table)]
+    H --&gt; L[(Speeches Table)]
+
+    I --&gt; M[Analysis Ready Database]
+    J --&gt; M
+    K --&gt; M
+    L --&gt; M
+
+    M --&gt; N[dplyr Queries]
+    M --&gt; O[SQL Queries]
+    M --&gt; P[Text Mining]</code></pre>
 </div>
 <div class="section level2">
 <h2 id="example-analyses">Example Analyses<a class="anchor" aria-label="anchor" href="#example-analyses"></a>
