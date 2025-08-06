@@ -284,7 +284,7 @@
     SESSIONS ||--o{ SPEECHES : "contains"
     MEMBERS ||--o{ SPEECHES : "gives"
     DEBATES ||--o{ SPEECHES : "includes"
-    DEBATES ||--o{ DEBATES : "parent_of"
+    DEBATES ||--o{ DEBATES : "has_subdebates"
     SPEECHES ||--|| SPEECHES_FTS : "indexed_by"</code></pre>
 </div>
 <div class="section level3">
