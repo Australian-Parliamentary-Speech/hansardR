@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# hansardR
+# hansardR <a href="https://australian-parliamentary-speech.github.io/hansardR/"><img src="man/figures/logo.png" align="right" height="120" alt="hansardR website" /></a>
 
 <!-- badges: start -->
 

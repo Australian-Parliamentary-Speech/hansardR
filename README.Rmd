@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# hansardR
+# hansardR <a href="https://australian-parliamentary-speech.github.io/hansardR/"><img src="man/figures/logo.png" align="right" height="120" alt="hansardR website" /></a>
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/Australian-Parliamentary-Speech/hansardR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Australian-Parliamentary-Speech/hansardR/actions/workflows/R-CMD-check.yaml)

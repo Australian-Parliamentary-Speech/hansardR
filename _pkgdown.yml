@@ -1,6 +1,7 @@
 url: https://australian-parliamentary-speech.github.io/hansardR/
 template:
   bootstrap: 5
+  logo: man/figures/logo.png
   includes:
     in_header: |
       <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
