@@ -140,18 +140,12 @@ The package creates a normalised database schema:
 The package creates a normalised relational database optimised for
 parliamentary data analysis:
 
-``` mermaid
-erDiagram
-    SESSIONS {
-        int session_id PK
-        date session_date UK
-        int year "Generated"
-        int chamber_type
-        text source_file
-        text file_hash
-        datetime created_at
-    }
-    
+<div class="mermaid">
+
+erDiagram SESSIONS { int session_id PK date session_date UK int year
+“Generated” int chamber_type text source_file text file_hash datetime
+created_at }
+
     MEMBERS {
         int member_id PK
         text name_id UK
@@ -166,7 +160,7 @@ erDiagram
         date last_parliament_date
         datetime created_at
     }
-    
+
     DEBATES {
         int debate_id PK
         int session_id FK
@@ -176,7 +170,7 @@ erDiagram
         int debate_level "Hierarchy level"
         datetime created_at
     }
-    
+
     SPEECHES {
         int speech_id PK
         int session_id FK
@@ -196,7 +190,7 @@ erDiagram
         int content_length "Generated"
         datetime created_at
     }
-    
+
     SPEECHES_FTS {
         int rowid FK "Links to speech_id"
         text content "Full-text indexed"
@@ -207,46 +201,49 @@ erDiagram
     MEMBERS ||--o{ SPEECHES : "gives"
     DEBATES ||--o{ SPEECHES : "includes"
     SPEECHES ||--|| SPEECHES_FTS : "indexed_by"
-```
+
+</div>
 
 ### Data processing workflow
 
-``` mermaid
+<div class="mermaid">
+
 flowchart TD
 
     A[CSV Files<br/>2025-02-04_edit_step7.csv] --> B{File Validation}
     B -->|Valid| C[Load & Clean Data]
     B -->|Invalid| D[Report Issues]
-    
+
     C --> E[Extract Session Info<br/>Date, Chamber, Source]
     C --> F[Extract Members<br/>Name, Party, Electorate]
     C --> G[Extract Debates<br/>Topics, Order]
     C --> H[Extract Speeches<br/>Content, Flags, Metadata]
-    
+
     E --> I[(Sessions Table)]
     F --> J[(Members Table)]
     G --> K[(Debates Table)]
     H --> L[(Speeches Table)]
-    
+
     I --> M[Analysis Ready Database]
     J --> M
     K --> M
     L --> M
-    
+
     M --> N[dplyr Queries]
     M --> O[SQL Queries]
     M --> P[Text Mining]
-    
+
     N --> Q[Speaker Statistics]
     O --> R[Temporal Analysis]
     P --> S[Content Analysis]
-    
+
     style A fill:#e1f5fe
     style M fill:#f3e5f5
     style Q fill:#e8f5e8
     style R fill:#e8f5e8
     style S fill:#e8f5e8
-```
+
+</div>
 
 ## Example Analyses
 

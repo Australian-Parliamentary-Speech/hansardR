@@ -134,7 +134,7 @@ The package creates a normalised database schema:
 
 The package creates a normalised relational database optimised for parliamentary data analysis:
 
-```mermaid
+<div class="mermaid">
 erDiagram
     SESSIONS {
         int session_id PK
@@ -201,11 +201,11 @@ erDiagram
     MEMBERS ||--o{ SPEECHES : "gives"
     DEBATES ||--o{ SPEECHES : "includes"
     SPEECHES ||--|| SPEECHES_FTS : "indexed_by"
-```
+</div>
 
 ### Data processing workflow
 
-```mermaid
+<div class="mermaid">
 flowchart TD
 
     A[CSV Files<br/>2025-02-04_edit_step7.csv] --> B{File Validation}
@@ -240,7 +240,7 @@ flowchart TD
     style Q fill:#e8f5e8
     style R fill:#e8f5e8
     style S fill:#e8f5e8
-```
+</div>
 
 ## Example Analyses
 

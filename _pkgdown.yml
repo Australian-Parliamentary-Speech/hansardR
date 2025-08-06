@@ -1,4 +1,14 @@
 url: https://australian-parliamentary-speech.github.io/hansardR/
 template:
   bootstrap: 5
-
+  includes:
+    in_header: |
+      <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          mermaid.initialize({startOnLoad: true});
+        });
+      </script>
+home:
+  sidebar:
+    structure: [links, license, citation, authors, dev]
