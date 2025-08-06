@@ -12,6 +12,8 @@ coverage](https://codecov.io/gh/Australian-Parliamentary-Speech/hansardR/branch/
 status](https://www.r-pkg.org/badges/version/hansardR)](https://CRAN.R-project.org/package=hansardR)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Codecov test
+coverage](https://codecov.io/gh/Australian-Parliamentary-Speech/hansardR/graph/badge.svg)](https://app.codecov.io/gh/Australian-Parliamentary-Speech/hansardR)
 <!-- badges: end -->
 
 A comprehensive R toolkit for processing, validating, and analysing
