@@ -168,7 +168,7 @@ erDiagram
     DEBATES {
         int debate_id PK
         int session_id FK
-        int parent_debate_id FK "Self-reference"
+        int parent_debate_id FK "References debate_id for hierarchy"
         text debate_title
         int debate_order
         int debate_level "Hierarchy level"
@@ -204,7 +204,6 @@ erDiagram
     SESSIONS ||--o{ SPEECHES : "contains"
     MEMBERS ||--o{ SPEECHES : "gives"
     DEBATES ||--o{ SPEECHES : "includes"
-    DEBATES ||--o{ DEBATES : "has_subdebates"
     SPEECHES ||--|| SPEECHES_FTS : "indexed_by"
 ```
 
