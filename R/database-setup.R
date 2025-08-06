@@ -1,10 +1,55 @@
 #' Create Hansard Database
 #'
-#' Creates a new SQLite database with the standard Hansard schema
+#' Creates a new SQLite database with the standard Hansard schema optimized for
+#' parliamentary data analysis. The database includes tables for sessions, members,
+#' debates, and speeches with appropriate indexes, triggers, and full-text search
+#' capabilities.
 #'
-#' @param db_path Path to the database file
-#' @param overwrite Should existing database be overwritten?
-#' @return DBI connection object
+#' @param db_path Complete path to the database file including filename. 
+#'   Can be relative (e.g., "hansard.db") or absolute 
+#'   (e.g., "~/data/parliament.db"). Directory will be created if it doesn't exist.
+#'   Common extensions: .db, .sqlite, .sqlite3
+#' @param overwrite Logical. Should existing database be overwritten? 
+#'   Defaults to FALSE for safety.
+#' @return DBI connection object to the created database
+#' 
+#' @details
+#' The function creates a normalized relational database with the following tables:
+#' \itemize{
+#'   \item \strong{sessions}: Parliamentary sitting days and session metadata
+#'   \item \strong{members}: MPs with party affiliations and electoral information  
+#'   \item \strong{debates}: Major topics and debate hierarchy
+#'   \item \strong{speeches}: Individual contributions with full-text search support
+#'   \item \strong{speeches_fts}: Full-text search index (SQLite FTS5)
+#' }
+#' 
+#' The database includes optimized indexes for common queries, automatic triggers
+#' for data validation, and generated columns for computed values.
+#' 
+#' @examples
+#' \dontrun{
+#' # Create database in current directory
+#' con <- create_hansard_database("hansard.db")
+#' 
+#' # Create database in specific location
+#' con <- create_hansard_database("~/research/parliament_data.db")
+#' 
+#' # Create temporary database for testing
+#' temp_db <- tempfile(fileext = ".db")
+#' con <- create_hansard_database(temp_db)
+#' 
+#' # Overwrite existing database
+#' con <- create_hansard_database("hansard.db", overwrite = TRUE)
+#' 
+#' # Always disconnect when done
+#' DBI::dbDisconnect(con)
+#' }
+#' 
+#' @seealso 
+#' \code{\link{connect_hansard_database}} to connect to existing databases,
+#' \code{\link{optimize_hansard_database}} to apply optimizations to existing databases,
+#' \code{\link{import_hansard_file}} to import CSV data
+#' 
 #' @export
 create_hansard_database <- function(db_path, overwrite = FALSE) {
 
@@ -25,10 +70,36 @@ create_hansard_database <- function(db_path, overwrite = FALSE) {
   return(con)
 }
 
-#' Connect to Hansard Database
+#' Connect to Existing Hansard Database
 #'
-#' @param db_path Path to the database file
-#' @return DBI connection object
+#' Connects to an existing Hansard SQLite database file. Use this function to
+#' reconnect to databases created with \code{\link{create_hansard_database}}.
+#'
+#' @param db_path Complete path to the existing database file including filename.
+#'   Must be a valid SQLite database file that exists on disk.
+#' @return DBI connection object to the database
+#' 
+#' @details
+#' This function simply establishes a connection to an existing database without
+#' modifying its structure. To apply optimizations to older databases, 
+#' use \code{\link{optimize_hansard_database}} after connecting.
+#' 
+#' @examples
+#' \dontrun{
+#' # Connect to database in current directory
+#' con <- connect_hansard_database("hansard.db")
+#' 
+#' # Connect to database in specific location  
+#' con <- connect_hansard_database("~/research/parliament_data.db")
+#' 
+#' # Always disconnect when done
+#' DBI::dbDisconnect(con)
+#' }
+#' 
+#' @seealso 
+#' \code{\link{create_hansard_database}} to create new databases,
+#' \code{\link{optimize_hansard_database}} to upgrade existing databases
+#' 
 #' @export
 connect_hansard_database <- function(db_path) {
   if (!file.exists(db_path)) {

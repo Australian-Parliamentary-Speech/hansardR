@@ -2,16 +2,40 @@
 % Please edit documentation in R/database-setup.R
 \name{connect_hansard_database}
 \alias{connect_hansard_database}
-\title{Connect to Hansard Database}
+\title{Connect to Existing Hansard Database}
 \usage{
 connect_hansard_database(db_path)
 }
 \arguments{
-\item{db_path}{Path to the database file}
+\item{db_path}{Complete path to the existing database file including filename.
+Must be a valid SQLite database file that exists on disk.}
 }
 \value{
-DBI connection object
+DBI connection object to the database
 }
 \description{
-Connect to Hansard Database
+Connects to an existing Hansard SQLite database file. Use this function to
+reconnect to databases created with \code{\link{create_hansard_database}}.
+}
+\details{
+This function simply establishes a connection to an existing database without
+modifying its structure. To apply optimizations to older databases,
+use \code{\link{optimize_hansard_database}} after connecting.
+}
+\examples{
+\dontrun{
+# Connect to database in current directory
+con <- connect_hansard_database("hansard.db")
+
+# Connect to database in specific location  
+con <- connect_hansard_database("~/research/parliament_data.db")
+
+# Always disconnect when done
+DBI::dbDisconnect(con)
+}
+
+}
+\seealso{
+\code{\link{create_hansard_database}} to create new databases,
+\code{\link{optimize_hansard_database}} to upgrade existing databases
 }
