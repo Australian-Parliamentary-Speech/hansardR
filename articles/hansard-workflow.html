@@ -105,7 +105,7 @@ and interjections</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Sample data location:"</span>, <span class="va">sample_data_path</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Sample data location: /home/runner/work/_temp/Library/hansardR/extdata/houseCSV</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Temporary database:"</span>, <span class="va">db_path</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Temporary database: /tmp/RtmpWnK5tj/file1e731f98e824.db</span></span>
+<span><span class="co">#&gt; Temporary database: /tmp/RtmpXnPcTJ/file1eef45ccdeb8.db</span></span>
 <span></span>
 <span><span class="co"># Show available sample data structure</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.exists</a></span><span class="op">(</span><span class="va">sample_data_path</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -137,8 +137,9 @@ and interjections</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create database with standard schema</span></span>
 <span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_hansard_database.html">create_hansard_database</a></span><span class="op">(</span><span class="va">db_path</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Standard schema created</span></span>
-<span><span class="co">#&gt; Database created successfully at: /tmp/RtmpWnK5tj/file1e731f98e824.db</span></span>
+<span><span class="co">#&gt; Database triggers created</span></span>
+<span><span class="co">#&gt; Standard schema created with optimizations</span></span>
+<span><span class="co">#&gt; Database created successfully at: /tmp/RtmpXnPcTJ/file1eef45ccdeb8.db</span></span>
 <span></span>
 <span><span class="co"># Or connect to existing database</span></span>
 <span><span class="co"># con &lt;- connect_hansard_database(db_path)</span></span></code></pre></div>
@@ -922,11 +923,11 @@ pattern:</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 2</span></span></span>
 <span><span class="co">#&gt;   filename                  processed_at       </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>             </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2024-02-08_edit_step7.csv 2025-08-05 <span style="color: #949494;">23:44:05</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 2024-05-14_edit_step7.csv 2025-08-05 <span style="color: #949494;">23:44:05</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 2024-11-21_edit_step7.csv 2025-08-05 <span style="color: #949494;">23:44:05</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 2025-02-06_edit_step7.csv 2025-08-05 <span style="color: #949494;">23:44:05</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 2025-03-25_edit_step7.csv 2025-08-05 <span style="color: #949494;">23:44:05</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2024-02-08_edit_step7.csv 2025-08-06 <span style="color: #949494;">00:01:00</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 2024-05-14_edit_step7.csv 2025-08-06 <span style="color: #949494;">00:01:00</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 2024-11-21_edit_step7.csv 2025-08-06 <span style="color: #949494;">00:01:00</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 2025-02-06_edit_step7.csv 2025-08-06 <span style="color: #949494;">00:01:00</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 2025-03-25_edit_step7.csv 2025-08-06 <span style="color: #949494;">00:01:00</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Retrying failed imports...</span></span>
 <span><span class="co">#&gt; Processing: 2024-02-08_edit_step7.csv</span></span>
@@ -945,11 +946,11 @@ pattern:</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 4</span></span></span>
 <span><span class="co">#&gt;   file_path                                 filename success processed_at       </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>             </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> /home/runner/work/_temp/Library/hansardR… 2024-02… TRUE    2025-08-05 <span style="color: #949494;">23:44:08</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> /home/runner/work/_temp/Library/hansardR… 2024-05… TRUE    2025-08-05 <span style="color: #949494;">23:44:08</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> /home/runner/work/_temp/Library/hansardR… 2024-11… TRUE    2025-08-05 <span style="color: #949494;">23:44:08</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> /home/runner/work/_temp/Library/hansardR… 2025-02… TRUE    2025-08-05 <span style="color: #949494;">23:44:08</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> /home/runner/work/_temp/Library/hansardR… 2025-03… TRUE    2025-08-05 <span style="color: #949494;">23:44:08</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> /home/runner/work/_temp/Library/hansardR… 2024-02… TRUE    2025-08-06 <span style="color: #949494;">00:01:03</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> /home/runner/work/_temp/Library/hansardR… 2024-05… TRUE    2025-08-06 <span style="color: #949494;">00:01:03</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> /home/runner/work/_temp/Library/hansardR… 2024-11… TRUE    2025-08-06 <span style="color: #949494;">00:01:03</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> /home/runner/work/_temp/Library/hansardR… 2025-02… TRUE    2025-08-06 <span style="color: #949494;">00:01:03</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> /home/runner/work/_temp/Library/hansardR… 2025-03… TRUE    2025-08-06 <span style="color: #949494;">00:01:03</span></span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="database-optimization">Database Optimization<a class="anchor" aria-label="anchor" href="#database-optimization"></a>
@@ -960,7 +961,7 @@ pattern:</p>
 <span>  <span class="va">db_size_mb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.info.html" class="external-link">file.size</a></span><span class="op">(</span><span class="va">db_path</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1024</span><span class="op">^</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Database size:"</span>, <span class="va">db_size_mb</span>, <span class="st">"MB\n"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="co">#&gt; Database size: 2.2 MB</span></span>
+<span><span class="co">#&gt; Database size: 4.2 MB</span></span>
 <span></span>
 <span><span class="co"># Optimize database (SQLite maintenance)</span></span>
 <span><span class="fu">DBI</span><span class="fu">::</span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbExecute.html" class="external-link">dbExecute</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"VACUUM;"</span><span class="op">)</span></span>
@@ -1025,7 +1026,7 @@ indexes for common queries - Use <code><a href="https://dplyr.tidyverse.org/refe
 need data in R - Filter early in dplyr chains to reduce data
 transfer</p>
 <p>For additional help, see the package documentation:
-<code><a href="https://rdrr.io/pkg/hansardR/man" class="external-link">help(package = "hansardR")</a></code></p>
+<code><a href="https://australian-parliamentary-speech.github.io/hansardR/reference">help(package = "hansardR")</a></code></p>
 </div>
 </div>
 </div>

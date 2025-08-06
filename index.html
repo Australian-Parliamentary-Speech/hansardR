@@ -64,12 +64,14 @@
 <h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
 </h2>
 <ul>
-<li>🗃️ <strong>Database Creation</strong>: Structured SQLite storage with optimised indexes</li>
+<li>🗃️ <strong>Database Creation</strong>: Structured SQLite storage with optimised indexes and triggers</li>
 <li>✅ <strong>File Validation</strong>: Comprehensive CSV structure and integrity checking<br>
 </li>
 <li>📊 <strong>Batch Processing</strong>: Efficient import of large datasets with progress tracking</li>
 <li>🔍 <strong>Advanced Querying</strong>: dplyr-compatible database interface for analysis</li>
+<li>🔎 <strong>Full-Text Search</strong>: SQLite FTS5 powered content search with highlighting</li>
 <li>📈 <strong>Built-in Analytics</strong>: Speaker statistics, temporal analysis, and content metrics</li>
+<li>⚡ <strong>Performance Optimized</strong>: Strategic indexing and database triggers for speed</li>
 <li>🛠️ <strong>Modular Design</strong>: Separate validation, processing, and analysis workflows</li>
 <li>📚 <strong>Rich Documentation</strong>: Comprehensive vignettes and examples</li>
 </ul>
@@ -143,8 +145,8 @@
 </h2>
 <table class="table">
 <colgroup>
-<col width="38%">
-<col width="61%">
+<col width="50%">
+<col width="50%">
 </colgroup>
 <thead><tr class="header">
 <th>Function</th>
@@ -153,31 +155,47 @@
 <tbody>
 <tr class="odd">
 <td><code><a href="reference/create_hansard_database.html">create_hansard_database()</a></code></td>
-<td>Create structured SQLite database</td>
+<td>Create structured SQLite database with optimizations</td>
 </tr>
 <tr class="even">
+<td><code><a href="reference/optimize_hansard_database.html">optimize_hansard_database()</a></code></td>
+<td>Apply performance optimizations to existing database</td>
+</tr>
+<tr class="odd">
 <td><code><a href="reference/validate_csv_structure.html">validate_csv_structure()</a></code></td>
 <td>Check file integrity before processing</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code><a href="reference/import_hansard_file.html">import_hansard_file()</a></code></td>
 <td>Import single CSV file</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code><a href="reference/import_hansard_batch.html">import_hansard_batch()</a></code></td>
 <td>Import multiple files with progress tracking</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code><a href="reference/import_hansard_year.html">import_hansard_year()</a></code></td>
 <td>Import all files from a year directory</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code><a href="reference/get_hansard_tables.html">get_hansard_tables()</a></code></td>
 <td>Get dplyr table references for analysis</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code><a href="reference/get_top_speakers.html">get_top_speakers()</a></code></td>
 <td>Built-in speaker activity analysis</td>
+</tr>
+<tr class="odd">
+<td><code><a href="reference/search_speech_content.html">search_speech_content()</a></code></td>
+<td>Full-text search of speech content with highlighting</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/search_speeches_advanced.html">search_speeches_advanced()</a></code></td>
+<td>Advanced search combining content and metadata filters</td>
+</tr>
+<tr class="odd">
+<td><code><a href="reference/get_content_statistics.html">get_content_statistics()</a></code></td>
+<td>Content analysis and search capability statistics</td>
 </tr>
 </tbody>
 </table>
@@ -205,9 +223,10 @@
     SESSIONS {
         int session_id PK
         date session_date UK
-        int year
+        int year "Generated"
         int chamber_type
         text source_file
+        text file_hash
         datetime created_at
     }
 
@@ -218,16 +237,21 @@
         text electorate
         text party
         text role
+        text status "active/inactive/unknown"
         date first_seen_date
         date last_seen_date
+        date first_parliament_date
+        date last_parliament_date
         datetime created_at
     }
 
     DEBATES {
         int debate_id PK
         int session_id FK
+        int parent_debate_id FK "Self-reference"
         text debate_title
         int debate_order
+        int debate_level "Hierarchy level"
         datetime created_at
     }
 
@@ -247,14 +271,21 @@
         bool is_interjection
         bool is_speech
         bool is_stage_direction
-        int content_length
+        int content_length "Generated"
         datetime created_at
+    }
+
+    SPEECHES_FTS {
+        int rowid FK "Links to speech_id"
+        text content "Full-text indexed"
     }
 
     SESSIONS ||--o{ DEBATES : "has"
     SESSIONS ||--o{ SPEECHES : "contains"
     MEMBERS ||--o{ SPEECHES : "gives"
-    DEBATES ||--o{ SPEECHES : "includes"</code></pre>
+    DEBATES ||--o{ SPEECHES : "includes"
+    DEBATES ||--o{ DEBATES : "parent_of"
+    SPEECHES ||--|| SPEECHES_FTS : "indexed_by"</code></pre>
 </div>
 <div class="section level3">
 <h3 id="data-processing-workflow">Data processing workflow<a class="anchor" aria-label="anchor" href="#data-processing-workflow"></a>
@@ -339,6 +370,26 @@
 <span>  <span class="fu">count</span><span class="op">(</span><span class="va">month</span>, sort <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">collect</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
+<div class="section level3">
+<h3 id="full-text-search">Full-Text Search<a class="anchor" aria-label="anchor" href="#full-text-search"></a>
+</h3>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Search for climate change mentions</span></span>
+<span><span class="va">climate_speeches</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_speech_content.html">search_speech_content</a></span><span class="op">(</span><span class="va">con</span>, <span class="st">"climate change"</span>, limit <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Advanced search: ALP members discussing renewable energy since 2024</span></span>
+<span><span class="va">renewable_search</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/search_speeches_advanced.html">search_speeches_advanced</a></span><span class="op">(</span></span>
+<span>  <span class="va">con</span>,</span>
+<span>  content_query <span class="op">=</span> <span class="st">"renewable energy"</span>,</span>
+<span>  party <span class="op">=</span> <span class="st">"ALP"</span>, </span>
+<span>  date_from <span class="op">=</span> <span class="st">"2024-01-01"</span>,</span>
+<span>  limit <span class="op">=</span> <span class="fl">25</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get search statistics</span></span>
+<span><span class="va">search_stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_content_statistics.html">get_content_statistics</a></span><span class="op">(</span><span class="va">con</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">search_stats</span><span class="op">$</span><span class="va">basic</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="file-format">File Format<a class="anchor" aria-label="anchor" href="#file-format"></a>
@@ -354,13 +405,16 @@
 <div class="section level2">
 <h2 id="performance">Performance<a class="anchor" aria-label="anchor" href="#performance"></a>
 </h2>
-<p>Designed for large-scale parliamentary data:</p>
+<p>Designed for large-scale parliamentary data with enterprise-level optimizations:</p>
 <ul>
 <li>✅ Handles 100+ years of parliamentary data (1901-2025)</li>
 <li>✅ Efficient batch processing with transaction management</li>
-<li>✅ Optimised database indexes for common queries</li>
+<li>✅ Strategic database indexing with 15+ optimized indexes</li>
+<li>✅ Full-text search with SQLite FTS5 and BM25 ranking</li>
+<li>✅ Automatic database triggers for data validation and maintenance</li>
 <li>✅ Memory-efficient streaming for large files</li>
 <li>✅ Progress tracking for long-running operations</li>
+<li>✅ Database optimization functions for existing installations</li>
 </ul>
 </div>
 <div class="section level2">
@@ -370,26 +424,26 @@
 <div class="section level3">
 <h3 id="development-setup">Development Setup<a class="anchor" aria-label="anchor" href="#development-setup"></a>
 </h3>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Clone the repository</span></span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>git clone https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>Australian<span class="sc">-</span>Parliamentary<span class="sc">-</span>Speech<span class="sc">/</span>hansardR.git</span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>cd hansardR</span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co"># Install development dependencies</span></span>
-<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_dev_deps</span>()</span>
-<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a></span>
-<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co"># Run tests</span></span>
-<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">test</span>()</span>
-<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a></span>
-<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co"># Check package</span></span>
-<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">check</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Clone the repository</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>git clone https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>Australian<span class="sc">-</span>Parliamentary<span class="sc">-</span>Speech<span class="sc">/</span>hansardR.git</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>cd hansardR</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="co"># Install development dependencies</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_dev_deps</span>()</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co"># Run tests</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">test</span>()</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a><span class="co"># Check package</span></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">check</span>()</span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <p>If you use hansardR in your research, please cite:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>Benoit, <span class="fu">Kenneth</span> (<span class="dv">2025</span>). hansardR<span class="sc">:</span> Processing Australian Parliamentary Hansard Data. </span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>R package version <span class="dv">0</span>.<span class="dv">1</span>.<span class="fl">0.</span> https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>Australian<span class="sc">-</span>Parliamentary<span class="sc">-</span>Speech<span class="sc">/</span>hansardR</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>Benoit, <span class="fu">Kenneth</span> (<span class="dv">2025</span>). hansardR<span class="sc">:</span> Processing Australian Parliamentary Hansard Data. </span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>R package version <span class="dv">0</span>.<span class="dv">1</span>.<span class="fl">0.</span> https<span class="sc">:</span><span class="er">//</span>github.com<span class="sc">/</span>Australian<span class="sc">-</span>Parliamentary<span class="sc">-</span>Speech<span class="sc">/</span>hansardR</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="related-projects">Related Projects<a class="anchor" aria-label="anchor" href="#related-projects"></a>
